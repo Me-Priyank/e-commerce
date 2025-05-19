@@ -8,6 +8,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import LoginPage from './pages/LoginPage';
+import BookAppointment from './pages/BookAppointments';
 
 // Create a context to manage auth state throughout the app
 export const AuthContext = React.createContext({
@@ -57,6 +58,7 @@ function App() {
           <Route path="product/:id" element={<ProductDetail />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="book-appointment" element={<BookAppointment/>}/>
           <Route path="*" element={<NotFound />} />
         </Route>
         
