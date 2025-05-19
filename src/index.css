@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Montserrat', sans-serif;
+    scroll-behavior: smooth;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+  }
+  
+  body {
+    @apply bg-cream text-dark;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply relative hover:text-gold transition-colors duration-300 uppercase tracking-wider text-sm;
+  }
+  
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-[-4px] left-0 w-0 h-[1px] bg-gold transition-all duration-300;
+  }
+  
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+  
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .btn-primary {
+    @apply bg-gold text-white px-6 py-3 rounded-none uppercase tracking-wider text-sm font-medium hover:bg-gold/90 transition-colors duration-300;
+  }
+  
+  .btn-secondary {
+    @apply border border-gold text-gold px-6 py-3 rounded-none uppercase tracking-wider text-sm font-medium hover:bg-gold hover:text-white transition-colors duration-300;
+  }
+  
+  .product-card {
+    @apply relative overflow-hidden;
+  }
+  
+  .product-card-img {
+    @apply w-full h-auto transition-transform duration-700 ease-in-out;
+  }
+  
+  .product-card:hover .product-card-img {
+    @apply scale-105;
+  }
+  
+  .product-card-overlay {
+    @apply absolute inset-0 bg-dark/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300;
+  }
+  
+  .product-quick-actions {
+    @apply absolute bottom-0 left-0 right-0 bg-white bg-opacity-95 py-3 px-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex justify-center space-x-4;
+  }
+  
+  .filter-checkbox {
+    @apply w-5 h-5 border border-gold/50 checked:bg-gold checked:border-gold focus:ring-gold text-gold rounded-none;
+  }
+  
+  .price-slider {
+    @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
+  }
+  
+  .price-slider::-webkit-slider-thumb {
+    @apply appearance-none w-4 h-4 rounded-full bg-gold;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-cream;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gold/50 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gold;
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.slide-up {
+  animation: slideUp 0.7s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
