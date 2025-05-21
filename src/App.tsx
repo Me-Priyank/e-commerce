@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
@@ -9,34 +9,20 @@ import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import LoginPage from './pages/LoginPage';
 import BookAppointment from './pages/BookAppointments';
-
-// Create a context to manage auth state throughout the app
-export const AuthContext = React.createContext({
-  isLoggedIn: 0,
-  setIsLoggedIn: (value: number) => {},
-  userEmail: '',
-  setUserEmail: (email: string) => {}
-});
+import { AuthProvider, AuthContext } from './pages/AuthContext';
 
 function App() {
-  // Initialize state from localStorage or default to logged out (0)
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const savedLoginState = localStorage.getItem('isLoggedIn');
-    return savedLoginState ? parseInt(savedLoginState) : 0;
-  });
-  
-  const [userEmail, setUserEmail] = useState(() => {
-    return localStorage.getItem('userEmail') || '';
-  });
-  
-  // Update localStorage when auth state changes
-  useEffect(() => {
-    localStorage.setItem('isLoggedIn', isLoggedIn.toString());
-  }, [isLoggedIn]);
-  
-  useEffect(() => {
-    localStorage.setItem('userEmail', userEmail);
-  }, [userEmail]);
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
+  );
+}
+
+// Separate component for routes that uses the AuthContext
+function AppRoutes() {
+  // Use the AuthContext
+  const { isLoggedIn } = React.useContext(AuthContext);
 
   // Protected route component that redirects to login if user is not logged in
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -47,36 +33,38 @@ function App() {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, userEmail, setUserEmail }}>
-      <Routes>
-        {/* Redirect root to login if not logged in */}
-        <Route path="/" element={
-          isLoggedIn === 0 ? <Navigate to="/login" /> : <Layout />
-        }>
-          <Route index element={<Home />} />
-          <Route path="collection/:category" element={<CollectionPage />} />
-          <Route path="product/:id" element={<ProductDetail />} />
-          <Route path="about" element={<About />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="book-appointment" element={<BookAppointment/>}/>
-          <Route path="*" element={<NotFound />} />
-        </Route>
-        
-        {/* Login route (outside the Layout) */}
-        <Route path="/login" element={
-          isLoggedIn === 1 ? <Navigate to="/" /> : <LoginPage />
-        } />
-        
-        {/* Account route (protected) */}
-        <Route path="/account" element={
-          <ProtectedRoute>
-            <Layout>
-              <LoginPage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-      </Routes>
-    </AuthContext.Provider>
+    <Routes>
+      {/* Routes inside Layout */}
+      <Route path="/" element={
+        isLoggedIn === 0 ? <Navigate to="/login" /> : <Layout />
+      }>
+        <Route index element={<Home />} />
+        <Route path="home" element={<Home />} />
+        <Route path="collection/:category" element={<CollectionPage />} />
+        <Route path="product/:id" element={<ProductDetail />} />
+        <Route path="about" element={<About />} />
+        <Route path="contact" element={<Contact />} />
+        <Route path="book-appointment" element={<BookAppointment />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+      
+      {/* Login route (outside the Layout) */}
+      <Route path="/login" element={
+        isLoggedIn === 1 ? <Navigate to="/home" /> : <LoginPage />
+      } />
+      
+      {/* Account route (protected) */}
+      <Route path="/account" element={
+        <ProtectedRoute>
+          <Layout>
+            <div className="container mx-auto py-8 px-4">
+              <h1 className="text-2xl font-bold mb-4">My Account</h1>
+              {/* Account page content here */}
+            </div>
+          </Layout>
+        </ProtectedRoute>
+      } />
+    </Routes>
   );
 }
 
