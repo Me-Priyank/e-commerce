@@ -34,8 +34,7 @@ function AppRoutes() {
 
   return (
     <Routes>
-      {/* Routes inside Layout */}
-      <Route path="/" element={
+\      <Route path="/" element={
         isLoggedIn === 0 ? <Navigate to="/login" /> : <Layout />
       }>
         <Route index element={<Home />} />
