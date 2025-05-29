@@ -129,7 +129,7 @@ const Contact: React.FC = () => {
 
 
       {/* FAQ Section */}
-      <div className="py-16 container-custom">
+      {/* <div className="py-16 container-custom">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-heading">Frequently Asked Questions</h2>
           <div className="w-20 h-[2px] bg-gold mx-auto mt-3 mb-6"></div>
@@ -181,7 +181,7 @@ const Contact: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
