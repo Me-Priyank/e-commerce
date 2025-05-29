@@ -1,12 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { motion } from 'framer-motion';
 import ProductCard from '../components/ProductCard';
-import { featuredProducts } from '../data/products';
+import { getFeaturedProducts } from '../data/products';
 
 const Home: React.FC = () => {
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        const featured = await getFeaturedProducts();
+        setFeaturedProducts(featured);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+      setIsLoading(false);
+    };
+
+    fetchProducts();
+  }, []);
   
   return (
     <div>
@@ -160,32 +177,37 @@ const Home: React.FC = () => {
         </div>
         
         <div className="text-center">
-          <Link to="/collections" className="btn-secondary">View All Categories</Link>
+          <Link to="/all" className="btn-secondary">View All Categories</Link>
         </div>
       </section>
 
       {/* Featured Products */}
       <section className="py-16 bg-light">
-        <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-heading">New Arrivals</h2>
-            <div className="w-20 h-[2px] bg-gold mx-auto mt-3 mb-6"></div>
-            <p className="max-w-2xl mx-auto text-gray-600">
-              Discover our latest collection of handcrafted pieces
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {featuredProducts.slice(0, 8).map(product => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-          
-          <div className="text-center mt-12">
-            <Link to="/collection/all" className="btn-primary">View All Products</Link>
-          </div>
+    <div className="container-custom">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-heading">Featured Collection</h2>
+        <div className="w-20 h-[2px] bg-gold mx-auto mt-3 mb-4"></div>
+      </div>
+      
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="bg-gray-200 aspect-[3/4] rounded-md"></div>
+              <div className="h-4 bg-gray-200 mt-2 w-3/4"></div>
+              <div className="h-4 bg-gray-200 mt-1 w-1/2"></div>
+            </div>
+          ))}
         </div>
-      </section>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {featuredProducts.map(product => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
 
       {/* Testimonials Section */}
       <section className="py-16 container-custom">

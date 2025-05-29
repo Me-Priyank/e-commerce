@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import ProductCard from '../components/ProductCard';
 import { getProductById, getRelatedProducts } from '../data/products';
 
+
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<any>(null);
@@ -16,25 +17,27 @@ const ProductDetail: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (id) {
-      setIsLoading(true);
-      const fetchedProduct = getProductById(id);
-      
-      if (fetchedProduct) {
-        setProduct(fetchedProduct);
-        setSelectedImage(fetchedProduct.images[0]);
-        // Set the first size as default selected
-        if (fetchedProduct.sizes && fetchedProduct.sizes.length > 0) {
-          setSelectedSize(fetchedProduct.sizes[0]);
+    const fetchData = async () => {
+      if (id) {
+        setIsLoading(true);
+        const fetchedProduct = await getProductById(id);
+        
+        if (fetchedProduct) {
+          setProduct(fetchedProduct);
+          setSelectedImage(fetchedProduct.images[0]);
+          if (fetchedProduct.sizes && fetchedProduct.sizes.length > 0) {
+            setSelectedSize(fetchedProduct.sizes[0]);
+          }
+          
+          const related = await getRelatedProducts(id, fetchedProduct.category);
+          setRelatedProducts(related);
         }
         
-        // Get related products
-        const related = getRelatedProducts(id, fetchedProduct.category);
-        setRelatedProducts(related);
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
-    }
+    };
+    
+    fetchData();
   }, [id]);
 
   if (isLoading) {

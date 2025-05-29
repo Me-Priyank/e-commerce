@@ -9,6 +9,7 @@ import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import LoginPage from './pages/LoginPage';
 import BookAppointment from './pages/BookAppointments';
+import AllProducts from './pages/AllProducts';
 import { AuthProvider, AuthContext } from './pages/AuthContext';
 
 function App() {
@@ -34,11 +35,12 @@ function AppRoutes() {
 
   return (
     <Routes>
-\      <Route path="/" element={
+      <Route path="/" element={
         isLoggedIn === 0 ? <Navigate to="/login" /> : <Layout />
       }>
         <Route index element={<Home />} />
         <Route path="home" element={<Home />} />
+        <Route path="all" element={<AllProducts />} />
         <Route path="collection/:category" element={<CollectionPage />} />
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="about" element={<About />} />

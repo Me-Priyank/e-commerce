@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronDown, FilterX } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { getAllProducts } from '../data/products';
+import { getAllProducts, getProductsByCategory } from '../data/products';
 
 const CollectionPage: React.FC = () => {
   const { category } = useParams<{ category: string }>();
@@ -14,24 +14,33 @@ const CollectionPage: React.FC = () => {
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState('featured');
   const [showFilters, setShowFilters] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Filter products by category when the category param changes
   useEffect(() => {
-    if (category) {
-      const filtered = products.filter(product => 
-        product.category.toLowerCase() === category.toLowerCase()
-      );
-      setFilteredProducts(filtered);
-      
-      // Extract unique colors
-      const uniqueColors = Array.from(
-        new Set(filtered.map(product => product.colors).flat())
-      );
-      setColors(uniqueColors);
-    } else {
-      setFilteredProducts(products);
-    }
-  }, [category, products]);
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        if (category) {
+          const filtered = await getProductsByCategory(category);
+          setFilteredProducts(filtered);
+          
+          const uniqueColors = Array.from(
+            new Set(filtered.map(product => product.colors).flat())
+          );
+          setColors(uniqueColors);
+        } else {
+          const allProducts = await getAllProducts();
+          setFilteredProducts(allProducts);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+      setIsLoading(false);
+    };
+
+    fetchProducts();
+  }, [category]);
 
   // Apply filters
   useEffect(() => {
