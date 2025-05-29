@@ -131,7 +131,7 @@ const BookAppointment: React.FC = () => {
   };
 
   return (
-    <div className="bg-cream min-h-screen pb-16">
+    <div className="bg-[#f9f2e8] min-h-screen pb-16">
       {/* Page Header */}
       <div className="text-center py-12">
         <h1 className="text-4xl font-heading">Book Your Appointment</h1>
@@ -145,11 +145,11 @@ const BookAppointment: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Left Column - Calendar */}
-          <div className="bg-gray-50 p-6 rounded-md shadow-sm ">
+          <div className="bg-gray-50 p-6 rounded-md h-[80vh] shadow-sm ">
             <h2 className="text-2xl font-heading mb-4">Appointment Booking</h2>
             
             {/* Store Address */}
-            <div className="flex items-start mb-6 text-gray-600">
+            <div className="flex items-start mb-6 h-[10vh] text-gray-600">
               <MapPin size={20} className="mr-2 mt-1 text-gold flex-shrink-0 " />
               <p className="text-sm">
                 Pankti Chheda, 1st floor, Johnson house, Opp Swagat building, Shraddhanand road no 1, Vile Parle East, 
@@ -158,7 +158,7 @@ const BookAppointment: React.FC = () => {
             </div>
             
             {/* Calendar */}
-            <div className="border rounded-md overflow-hidden bg-white lg:h-[100vh]">
+            <div className="border rounded-md overflow-hidden bg-white lg:h-[50vh]">
               {/* Calendar Header */}
               <div className="flex items-center justify-between p-4 border-b">
                 <button 
@@ -298,77 +298,7 @@ const BookAppointment: React.FC = () => {
                 ))}
               </div>
               
-              {/* Customer Information Section */}
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <h3 className="text-lg font-medium mb-4">Your Information</h3>
-                
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                        First Name*
-                      </label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gold"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                        Last Name*
-                      </label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        name="lastName"
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gold"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address*
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      required
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gold"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone Number*
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      required
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gold"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
-                      Special Requests (Optional)
-                    </label>
-                    <textarea
-                      id="notes"
-                      name="notes"
-                      rows={3}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gold"
-                    ></textarea>
-                  </div>
-                </div>
-              </div>
+             
               
               {/* Submit Button */}
               <div className="mt-8">
