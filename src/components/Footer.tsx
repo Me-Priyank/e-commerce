@@ -101,26 +101,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Newsletter */}
-        <div className="border-t border-gray-700 pt-8 pb-4">
-          <div className="max-w-2xl mx-auto text-center mb-8">
-            <h3 className="text-xl font-heading mb-2">Subscribe to our newsletter</h3>
-            <p className="text-sm text-gray-300 mb-4">Stay updated with our latest collections and exclusive offers</p>
-            <form className="flex flex-col sm:flex-row max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Your email address"
-                className="px-4 py-2 bg-gray-800 text-white border border-gray-700 focus:border-gold focus:outline-none sm:flex-1"
-              />
-              <button 
-                type="submit"
-                className="bg-gold hover:bg-gold/90 text-white px-6 py-2 mt-2 sm:mt-0"
-              >
-                Subscribe
-              </button>
-            </form>
-          </div>
-        </div>
+        
 
         {/* Copyright */}
         <div className="border-t border-gray-700 pt-6 text-center">

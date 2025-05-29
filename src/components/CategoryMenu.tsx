@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 const CategoryMenu: React.FC = () => {
   return (
     <motion.div 
-      className="absolute top-full left-0 bg-cream shadow-lg p-6 min-w-[300px] z-50"
+      className="absolute top-full left-0 bg-[#f9f2e8] shadow-lg p-6 min-w-[300px] z-50"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}

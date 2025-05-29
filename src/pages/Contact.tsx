@@ -5,12 +5,12 @@ const Contact: React.FC = () => {
   return (
     <div>
       {/* Page Header */}
-      <div className="bg-cream py-12">
+      <div className="bg-[#f9f2e8] py-12">
         <div className="container-custom text-center">
           <h1 className="text-4xl font-heading mb-2">Contact Us</h1>
           <div className="w-20 h-[2px] bg-gold mx-auto mt-3 mb-4"></div>
           <p className="max-w-2xl mx-auto text-gray-600">
-            We'd love to hear from you. Reach out to us with any questions, feedback, or inquiries.
+            Home &nbsp;&nbsp; &gt;&nbsp;&nbsp; Contact
           </p>
         </div>
       </div>
@@ -127,11 +127,6 @@ const Contact: React.FC = () => {
         </div>
       </div>
 
-      {/* Map */}
-      <div className="h-[400px] w-full bg-gray-200 flex items-center justify-center">
-        <p className="text-gray-500">Google Map would be embedded here</p>
-        {/* In a real application, you would embed a Google Map or other map service here */}
-      </div>
 
       {/* FAQ Section */}
       <div className="py-16 container-custom">

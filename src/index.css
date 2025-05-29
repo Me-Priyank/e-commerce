@@ -14,7 +14,7 @@
   }
   
   body {
-    @apply bg-cream text-dark;
+    @apply bg-[#f9f2e8] text-dark;
     overflow-x: hidden;
   }
 }
@@ -38,13 +38,10 @@
   }
   
   .btn-primary {
-    @apply bg-gold text-white px-6 py-3 rounded-none uppercase tracking-wider text-sm font-medium hover:bg-gold/90 transition-colors duration-300;
+    @apply border border-white text-white px-6 py-3 rounded-lg uppercase tracking-wider text-sm font-medium hover:bg-black/80  transition-colors duration-300;
   }
   
-  .btn-secondary {
-    @apply border border-gold text-gold px-6 py-3 rounded-none uppercase tracking-wider text-sm font-medium hover:bg-gold hover:text-white transition-colors duration-300;
-  }
-  
+
   .product-card {
     @apply relative overflow-hidden;
   }
