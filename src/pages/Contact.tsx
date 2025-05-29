@@ -122,6 +122,7 @@ const Contact: React.FC = () => {
               >
                 Send Message
               </button>
+              
             </form>
           </div>
         </div>
