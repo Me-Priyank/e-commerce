@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import ProductCard from '../components/ProductCard';
-import { getAllProducts } from '../data/products';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import ProductCard from "../components/ProductCard";
+import { getAllProducts } from "../data/products";
 
 const AllProducts: React.FC = () => {
   const [products, setProducts] = useState<any[]>([]);
@@ -14,13 +14,15 @@ const AllProducts: React.FC = () => {
         const allProducts = await getAllProducts();
         setProducts(allProducts);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
       }
       setIsLoading(false);
     };
 
     fetchProducts();
   }, []);
+
+  console.log({ products });
 
   if (isLoading) {
     return (
@@ -47,7 +49,7 @@ const AllProducts: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          {products.map(product => (
+          {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </motion.div>
