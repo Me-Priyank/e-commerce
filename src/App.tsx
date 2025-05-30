@@ -20,18 +20,24 @@ function App() {
   );
 }
 
-// Separate component for routes that uses the AuthContext
 function AppRoutes() {
-  // Use the AuthContext
-  const { isLoggedIn } = React.useContext(AuthContext);
+  const { isLoggedIn, isLoading } = React.useContext(AuthContext);
 
-  // Protected route component that redirects to login if user is not logged in
+  // Protected route component
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+    if (isLoading) {
+      return <div>Loading...</div>; // Show loader during auth check
+    }
     if (isLoggedIn === 0) {
-      return <Navigate to="/login" />;
+      return <Navigate to="/login" replace />;
     }
     return <>{children}</>;
   };
+
+  // Handle loading state globally
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Routes>
@@ -50,13 +56,11 @@ function AppRoutes() {
         <Route path="*" element={<NotFound />} />
       </Route>
 
-      {/* Login route (outside the Layout) */}
       <Route
         path="/login"
-        element={isLoggedIn === 1 ? <Navigate to="/home" /> : <LoginPage />}
+        element={isLoggedIn === 1 ? <Navigate to="/" /> : <LoginPage />}
       />
 
-      {/* Account route (protected) */}
       <Route
         path="/account"
         element={

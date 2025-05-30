@@ -97,7 +97,7 @@ const Header: React.FC = () => {
   return (
     <>
       <header 
-        className={`sticky top-0 z-40 transition-all duration-300 ease-out ${
+        className={`sticky top-0 z-40 transition-all duration-300 border-b border-black ease-out ${
           isScrolled ? 'bg-[#f9f2e8] shadow-md py-2' : 'bg-[#f9f2e8] py-12'
         } ${
           isVisible ? 'translate-y-0' : '-translate-y-full'

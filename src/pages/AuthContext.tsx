@@ -7,6 +7,7 @@ interface AuthContextType {
   setUserEmail: (value: string) => void;
   userData: any | null;
   logout: () => void;
+  isLoading: boolean; // Add isLoading to context type
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -16,6 +17,7 @@ export const AuthContext = createContext<AuthContextType>({
   setUserEmail: () => {},
   userData: null,
   logout: () => {},
+  isLoading: true, // Add initial isLoading value
 });
 
 interface AuthProviderProps {
@@ -26,6 +28,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState<number>(0);
   const [userEmail, setUserEmail] = useState<string>('');
   const [userData, setUserData] = useState<any | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // Add loading state
 
   // Load auth state from localStorage on initial render
   useEffect(() => {
@@ -48,6 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUserEmail(storedEmail);
       }
     }
+    setIsLoading(false); // Mark loading as complete after auth check
   }, []);
 
   // Update localStorage when auth state changes
@@ -79,6 +83,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUserEmail,
         userData,
         logout,
+        isLoading, // Include isLoading in context value
       }}
     >
       {children}
