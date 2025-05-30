@@ -30,12 +30,12 @@ const CartDrawer: React.FC = () => {
       )}
       
       {/* Cart Drawer */}
-      <div className={`fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+      <div className={`fixed top-0 right-0 h-full w-full max-w-md bg-[#f9f2e8]  shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
         isCartOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold">Shopping Cart</h2>
+          <h2 className="text-3xl font-semibold">Shopping Cart</h2>
           <button 
             onClick={() => setIsCartOpen(false)}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -101,14 +101,14 @@ const CartDrawer: React.FC = () => {
 
         {/* Footer */}
         {cartItems.length > 0 && (
-          <div className="border-t p-6 space-y-4">
+          <div className="border-t p-6 space-y-4 absolute bottom-0 w-full">
             {/* Add Note Section */}
             <div className="flex items-center justify-between text-sm">
-              <button className="flex items-center text-gray-600 hover:text-black transition-colors">
+              <button className="flex items-center text-gray-600 hover:text-black items-center justify-center transition-colors bg-white p-2 w-[45%] font-semibold">
                 <span className="mr-2">📝</span>
                 Note
               </button>
-              <button className="flex items-center text-gray-600 hover:text-black transition-colors">
+              <button className="flex items-center text-gray-600 hover:text-black items-center justify-center transition-colors bg-white p-2 w-[45%] font-semibold">
                 <span className="mr-2">🏷️</span>
                 Coupon
               </button>

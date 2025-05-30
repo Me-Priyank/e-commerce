@@ -143,7 +143,7 @@ const ProductDetail: React.FC = () => {
                   src={selectedImage}
                   alt={product.name}
                   effect="blur"
-                  className="w-full h-full object-cover"
+                  className="w-full h-[100vh] object-cover"
                 />
               </motion.div>
             </div>
