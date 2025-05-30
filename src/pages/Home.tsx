@@ -1,81 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { motion } from 'framer-motion';
+import { getAllProducts } from '../data/products';
 
 const Home: React.FC = () => {
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const hoverImageUrl = "https://panktichheda.com/cdn/shop/files/Pankti20244126.jpg?v=1728135409&width=750";
 
-  const categories = [
-    { 
-      id: 1, 
-      title: "Sarees", 
-      href: "/collection/saree", 
-      image: "https://panktichheda.com/cdn/shop/files/Pankti20244523.jpg?v=1728134896&width=750",
-      product: {
-        name: "TITTLIYA",
-        description: "Lavender embellished hand painted Saree set",
-        price: "Rs. 69,000.00"
+  // Fetch products on component mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const allProducts = await getAllProducts();
+        // Take first 6 products for featured section
+        setFeaturedProducts(allProducts.slice(0, 6));
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setIsLoading(false);
       }
-    },
-    { 
-      id: 2, 
-      title: "Lehengas", 
-      href: "/collection/lehenga", 
-      image: "https://panktichheda.com/cdn/shop/files/Pankti20244523.jpg?v=1728134896&width=750",
-      product: {
-        name: "KANAL",
-        description: "Powder Blue Handpainted And Embellished Lehenga Set",
-        price: "Rs. 123,000.00"
-      }
-    },
-    { 
-      id: 3, 
-      title: "Kaftans", 
-      href: "/collection/kaftan", 
-      image: "https://panktichheda.com/cdn/shop/files/Pankti20244523.jpg?v=1728134896&width=750",
-      product: {
-        name: "MUSHKA",
-        description: "One Shoulder Cape Set",
-        price: "Rs. 72,000.00"
-      }
-    },
-    { 
-      id: 4, 
-      title: "Sarees", 
-      href: "/collection/saree", 
-      image: "https://panktichheda.com/cdn/shop/files/Pankti20244523.jpg?v=1728134896&width=750",
-      product: {
-        name: "TITTLIYA",
-        description: "Lavender embellished hand painted Saree set",
-        price: "Rs. 69,000.00"
-      }
-    },
-    { 
-      id: 5, 
-      title: "Lehengas", 
-      href: "/collection/lehenga", 
-      image: "https://panktichheda.com/cdn/shop/files/Pankti20244523.jpg?v=1728134896&width=750",
-      product: {
-        name: "KANAL",
-        description: "Powder Blue Handpainted And Embellished Lehenga Set",
-        price: "Rs. 123,000.00"
-      }
-    },
-    { 
-      id: 6, 
-      title: "Kaftans", 
-      href: "/collection/kaftan", 
-      image: "https://panktichheda.com/cdn/shop/files/Pankti20244523.jpg?v=1728134896&width=750",
-      product: {
-        name: "MUSHKA",
-        description: "One Shoulder Cape Set",
-        price: "Rs. 72,000.00"
-      }
-    },
-  ];
+    };
+
+    fetchProducts();
+  }, []);
+
   return (
     <div>
       {/* Hero Section */}
@@ -108,91 +60,133 @@ const Home: React.FC = () => {
           </motion.div>
         </div>
       </section>
+
       <div className='h-[40vh] w-full lg:h-[40vh] lg:w-[100vw] bg-[#f9f2e8] flex flex-col justify-center items-center text-center lg:px-80 gap-8'>
         <h1 className='text-3xl lg:text-4xl'>
         SAAH by Pankti Chheda
         </h1>
         <p className='text-sm lg:text-xl'>
-        This collection breathes life into Indian fashion by fusing tradition with modern elegance. What set’s SAAH apart is its thoughtful curation of intricate handpainting and embroidery, blending artistic motifs with a contemporary twist to celebrate Indian culture and craftsmanship.
+        This collection breathes life into Indian fashion by fusing tradition with modern elegance. What set's SAAH apart is its thoughtful curation of intricate handpainting and embroidery, blending artistic motifs with a contemporary twist to celebrate Indian culture and craftsmanship.
         </p>
       </div>
+
       <div
-  className=" relative h-[80vh] w-full bg-cover flex bg-center text-center justify-center items-center text-white lg:px-40 px-4 text-xl"
-  style={{
-    backgroundImage: "url('https://panktichheda.com/cdn/shop/files/Pankti20244411_1_1.jpg?v=1728500744&width=2000')"
-  }}
->
-<div className="absolute inset-0 bg-black/30"></div>
-<div className="relative z-10 text-white flex items-center justify-center h-full">
-This range transforms each garment into a canvas, showcasing hand-painted artistry with meticulous brushstrokes. Paired with intricate embroidery, it blends traditional Indian craftsmanship with modern design, offering a seamless fusion of luxury and contemporary fashion.
-</div>
-</div>
-      {/* Categories Section */}
+        className=" relative h-[80vh] w-full bg-cover flex bg-center text-center justify-center items-center text-white lg:px-40 px-4 text-xl"
+        style={{
+          backgroundImage: "url('https://panktichheda.com/cdn/shop/files/Pankti20244411_1_1.jpg?v=1728500744&width=2000')"
+        }}
+      >
+        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="relative z-10 text-white flex items-center justify-center h-full">
+          This range transforms each garment into a canvas, showcasing hand-painted artistry with meticulous brushstrokes. Paired with intricate embroidery, it blends traditional Indian craftsmanship with modern design, offering a seamless fusion of luxury and contemporary fashion.
+        </div>
+      </div>
+
+      {/* Featured Products Section */}
       <section className="py-10 px-4 md:px-8 w-full">
-      <div className="text-center mb-12">
-        
-      </div>
+        <div className="text-center mb-12">
+          {/* Optional section title */}
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-        {categories.map((category) => (
-          <div key={category.id} className="group">
-            <Link 
-              to={category.href} 
-              className="relative overflow-hidden h-[700px] block"
-            >
-              {/* Original Image */}
-              <div className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-0">
-                <img
-                  src={category.image}
-                  alt={category.title}
-                  className="w-full h-full object-cover"
-                />
+        {isLoading ? (
+          // Loading skeleton
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            {[...Array(6)].map((_, index) => (
+              <div key={index} className="animate-pulse">
+                <div className="bg-gray-200 h-[700px] rounded mb-4"></div>
+                <div className="bg-gray-200 h-6 rounded mb-2"></div>
+                <div className="bg-gray-200 h-4 rounded mb-2"></div>
+                <div className="bg-gray-200 h-5 rounded w-1/2"></div>
               </div>
-              
-              {/* Hover Image (Zooming in) */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-700 transform scale-105 group-hover:scale-110">
-                <img
-                  src={hoverImageUrl}
-                  alt={category.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              
-             
-              
-              {/* Content */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                
-              </div>
-            </Link>
-            
-            {/* Product Information Below Image */}
-            <div className="mt-4 px-2">
-              <h3 className="text-xl font-heading uppercase tracking-wider text-gray-800">
-                {category.product.name}
-              </h3>
-              <p className="text-gray-600 mt-2 text-sm md:text-base">
-                {category.product.description}
-              </p>
-              <p className=" text-lg mt-2 text-gray-800">
-                {category.product.price}
-              </p>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            {featuredProducts.map((product) => (
+              <div key={product.id} className="group">
+                <Link 
+                  to={`/product/${product.id}`} 
+                  className="relative overflow-hidden h-[700px] block"
+                >
+                  {/* Original Image */}
+                  <div className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-0">
+                    <img
+                      src={product.images[0] || product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  
+                  {/* Hover Image (Second image or fallback to hover image) */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-700 transform scale-105 group-hover:scale-110">
+                    <img
+                      src={product.images[1] || hoverImageUrl}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  
+                  {/* Sale/New badges */}
+                  
+                  
+                  {/* Content */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    
+                  </div>
+                </Link>
+                
+                {/* Product Information Below Image */}
+                <div className="mt-4 px-2">
+                  <h3 className="text-xl font-heading uppercase tracking-wider text-gray-800">
+                    {product.name}
+                  </h3>
+                  <p className="text-gray-600 mt-2 text-sm md:text-base">
+                    {product.description}
+                  </p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <p className="text-lg text-gray-800">
+                      Rs. {product.price.toLocaleString()}.00
+                    </p>
+                    {product.isSale && product.originalPrice && (
+                      <p className="text-sm text-gray-500 line-through">
+                        Rs. {product.originalPrice.toLocaleString()}.00
+                      </p>
+                    )}
+                  </div>
+                  
+                  {/* Colors available */}
+                  {product.colors && product.colors.length > 0 && (
+                    <div className="flex gap-1 mt-2">
+                      {product.colors.slice(0, 4).map((color: string, index: number) => (
+                        <div
+                          key={index}
+                          className="w-4 h-4 rounded-full border border-gray-300"
+                          style={{ backgroundColor: color.toLowerCase() }}
+                          title={color}
+                        ></div>
+                      ))}
+                      {product.colors.length > 4 && (
+                        <span className="text-xs text-gray-500 ml-1">
+                          +{product.colors.length - 4} more
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-      <div className="text-center">
-        <Link 
-          to="/all" 
-          className="inline-block px-6 py-3 text-sm font-medium tracking-wider text-black border border-black hover:bg-black hover:text-white transition-colors duration-300 rounded-lg mt-5"
-        >
-          Shop All Products
-        </Link>
-      </div>
-    </section>
-
-
+        <div className="text-center">
+          <Link 
+            to="/all" 
+            className="inline-block px-6 py-3 text-sm font-medium tracking-wider text-black border border-black hover:bg-black hover:text-white transition-colors duration-300 rounded-lg mt-5"
+          >
+            Shop All Products
+          </Link>
+        </div>
+      </section>
     </div>
   );
 };
