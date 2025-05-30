@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface CartItem {
@@ -21,30 +20,62 @@ interface CartContextType {
   getTotalPrice: () => number;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
+  isLoading: boolean; // Add loading state
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+// Helper function to safely access localStorage
+const getStoredCart = (): CartItem[] => {
+  if (typeof window === 'undefined') return [];
+  
+  try {
+    const savedCart = localStorage.getItem('shopping-cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  } catch (error) {
+    console.error('Error loading cart from localStorage:', error);
+    return [];
+  }
+};
+
+// Helper function to safely save to localStorage
+const saveCartToStorage = (cartItems: CartItem[]) => {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    localStorage.setItem('shopping-cart', JSON.stringify(cartItems));
+  } catch (error) {
+    console.error('Error saving cart to localStorage:', error);
+  }
+};
+
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Load cart from localStorage on component mount
   useEffect(() => {
-    const savedCart = localStorage.getItem('shopping-cart');
-    if (savedCart) {
-      try {
-        setCartItems(JSON.parse(savedCart));
-      } catch (error) {
-        console.error('Error loading cart from localStorage:', error);
-      }
-    }
+    const loadCart = () => {
+      const storedCart = getStoredCart();
+      setCartItems(storedCart);
+      setIsLoading(false);
+      setIsInitialized(true);
+    };
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(loadCart, 10);
+    
+    return () => clearTimeout(timer);
   }, []);
 
-  // Save cart to localStorage whenever cartItems change
+  // Save cart to localStorage whenever cartItems change (but not on initial load)
   useEffect(() => {
-    localStorage.setItem('shopping-cart', JSON.stringify(cartItems));
-  }, [cartItems]);
+    if (isInitialized) {
+      saveCartToStorage(cartItems);
+    }
+  }, [cartItems, isInitialized]);
 
   const addToCart = (item: Omit<CartItem, 'quantity'> & { quantity?: number }) => {
     const quantity = item.quantity || 1;
@@ -107,7 +138,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       getTotalItems,
       getTotalPrice,
       isCartOpen,
-      setIsCartOpen
+      setIsCartOpen,
+      isLoading
     }}>
       {children}
     </CartContext.Provider>

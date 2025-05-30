@@ -8,7 +8,7 @@ import SearchBar from './SearchBar';
 import { useCart } from '../context/CartContext';
 
 const Header: React.FC = () => {
-  const { getTotalItems, setIsCartOpen } = useCart();
+  const { getTotalItems, setIsCartOpen, isLoading } = useCart();
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -97,6 +97,8 @@ const Header: React.FC = () => {
     };
   }, [isScrolled, isVisible]); // Add dependencies to ensure proper updates
 
+  const totalItems = getTotalItems();
+
   return (
     <>
       <header
@@ -176,9 +178,9 @@ const Header: React.FC = () => {
               aria-label="Cart"
             >
               <ShoppingBag size={20} />
-              {getTotalItems() > 0 && (
+              {!isLoading && totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                  {getTotalItems()}
+                  {totalItems}
                 </span>
               )}
             </button>
