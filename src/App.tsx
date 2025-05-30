@@ -10,6 +10,8 @@ import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/LoginPage";
 import BookAppointment from "./pages/BookAppointments";
 import AllProducts from "./pages/AllProducts";
+import { CartProvider } from './context/CartContext';
+import CartDrawer from './components/CartDrawer';
 import { AuthProvider, AuthContext } from "./pages/AuthContext";
 
 function App() {
@@ -40,6 +42,7 @@ function AppRoutes() {
   }
 
   return (
+    <CartProvider>
     <Routes>
       <Route
         path="/"
@@ -75,6 +78,8 @@ function AppRoutes() {
         }
       />
     </Routes>
+    <CartDrawer />
+    </CartProvider>
   );
 }
 

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useCart } from '../context/CartContext';
+
 import { useParams, Link } from 'react-router-dom';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Heart, Share2, ShoppingBag, ChevronRight, ChevronDown, ChevronUp, MessageCircle } from 'lucide-react';
@@ -7,6 +9,8 @@ import ProductCard from '../components/ProductCard';
 import { getProductById, getRelatedProducts } from '../data/products';
 
 const ProductDetail: React.FC = () => {
+  const { addToCart, setIsCartOpen } = useCart(); // Add setIsCartOpen here
+
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<any>(null);
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
@@ -79,11 +83,23 @@ const ProductDetail: React.FC = () => {
       return;
     }
     
-    console.log('Added to cart:', {
-      ...product,
+    const cartItem = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images[0],
       selectedSize,
-      quantity
-    });
+      quantity,
+      category: product.category
+    };
+    
+    addToCart(cartItem);
+    
+    // Open the cart drawer after adding item
+    setIsCartOpen(true);
+    
+    // Optional: Remove the alert since cart will open
+    // alert('Added to cart successfully!');
   };
 
   const handleBuyNow = () => {
