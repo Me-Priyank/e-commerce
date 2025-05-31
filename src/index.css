@@ -28,7 +28,32 @@
     overflow-x: hidden;
   }
 }
+/* rc-slider-custom.css */
+.rc-slider-track {
+  background-color: #D4AF37 !important;
+  height: 4px !important;
+}
 
+.rc-slider-rail {
+  background-color: #e5e5e5 !important;
+  height: 4px !important;
+}
+
+.rc-slider-handle {
+  width: 16px !important;
+  height: 16px !important;
+  margin-top: -6px !important;
+  border: solid 2px #D4AF37 !important;
+  background-color: white !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+
+.rc-slider-handle:active, 
+.rc-slider-handle:focus, 
+.rc-slider-handle:hover {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.5) !important;
+}
 @layer components {
   .nav-link {
     @apply relative hover:text-gold transition-colors duration-300 uppercase tracking-wider text-sm;

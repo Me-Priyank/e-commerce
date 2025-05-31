@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
+import Range  from 'rc-slider';
+import 'rc-slider/assets/index.css';
 import ProductCard from "../components/ProductCard";
 import { getAllProducts } from "../data/products";
 import { API_URL } from "../constants";
@@ -171,6 +173,15 @@ const AllProducts: React.FC = () => {
     }));
   };
 
+  const handleRangeChange = (values: number | number[]) => {
+    if (Array.isArray(values)) {
+      setFilters(prev => ({
+        ...prev,
+        minPrice: values[0],
+        maxPrice: values[1]
+      }));
+    }
+  };
   const clearAllFilters = () => {
     setFilters({
       minPrice: filterOptions.priceRange.min,
@@ -255,52 +266,57 @@ const AllProducts: React.FC = () => {
             </button>
             
             {expandedSections.price && (
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <div className="flex-1">
-                    <label className="block text-sm text-gray-600 mb-1">Min</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
-                      <input
-                        type="number"
-                        value={filters.minPrice}
-                        onChange={(e) => setFilters(prev => ({ ...prev, minPrice: Number(e.target.value) }))}
-                        className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold"
-                        min={filterOptions.priceRange.min}
-                        max={filterOptions.priceRange.max}
-                      />
-                    </div>
-                  </div>
-                  <span className="text-gray-500 mt-6">To</span>
-                  <div className="flex-1">
-                    <label className="block text-sm text-gray-600 mb-1">Max</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
-                      <input
-                        type="number"
-                        value={filters.maxPrice}
-                        onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: Number(e.target.value) }))}
-                        className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold"
-                        min={filterOptions.priceRange.min}
-                        max={filterOptions.priceRange.max}
-                      />
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Price Range Slider */}
-                <div className="px-2">
-                  <input
-                    type="range"
-                    min={filterOptions.priceRange.min}
-                    max={filterOptions.priceRange.max}
-                    value={filters.maxPrice}
-                    onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: Number(e.target.value) }))}
-                    className="w-full accent-gold"
-                  />
-                </div>
-              </div>
-            )}
+  <div className="space-y-4">
+    <div className="flex items-center gap-2">
+      <div className="flex-1">
+        <label className="block text-sm text-gray-600 mb-1">Min</label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+          <input
+            type="number"
+            value={filters.minPrice}
+            onChange={(e) => setFilters(prev => ({ 
+              ...prev, 
+              minPrice: Math.min(Number(e.target.value), prev.maxPrice) 
+            }))}
+            className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold"
+            min={filterOptions.priceRange.min}
+            max={filterOptions.priceRange.max}
+          />
+        </div>
+      </div>
+      <span className="text-gray-500 mt-6">To</span>
+      <div className="flex-1">
+        <label className="block text-sm text-gray-600 mb-1">Max</label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+          <input
+            type="number"
+            value={filters.maxPrice}
+            onChange={(e) => setFilters(prev => ({ 
+              ...prev, 
+              maxPrice: Math.max(Number(e.target.value), prev.minPrice) 
+            }))}
+            className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold"
+            min={filterOptions.priceRange.min}
+            max={filterOptions.priceRange.max}
+          />
+        </div>
+      </div>
+    </div>
+    
+    {/* Dual Range Slider */}
+    <div className="px-2 py-4">
+      <Range
+        min={filterOptions.priceRange.min}
+        max={filterOptions.priceRange.max}
+        value={[filters.minPrice, filters.maxPrice]}
+        onChange={handleRangeChange}
+        allowCross={false}
+      />
+    </div>
+  </div>
+)}
           </div>
 
           {/* Product Type Filter */}
