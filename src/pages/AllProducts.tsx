@@ -239,11 +239,11 @@ const AllProducts: React.FC = () => {
         <div className="w-20 h-[2px] bg-gold mx-auto mt-3 mb-4"></div>
       </div>
 
-      <div className="flex flex-col justify-between lg:flex-row gap-8 px-10">
+      <div className="flex flex-col justify-between lg:flex-row gap-8 px-8">
         {/* Filters Sidebar */}
         <div className="w-full  bg-[#f9f2e8] p-5 h-fit -ml-[12%] flex flex-col gap-4">
-          <div className="flex items-center justify-between mb-6 lg:w-[20vw]">
-            <h2 className="text-4xl font-semibold">Filters</h2>
+          <div className="flex items-center justify-between mb-6 lg:w-[18vw]">
+            <h2 className="text-3xl font-semibold jiji ">Filters</h2>
             {(filters.colors.length > 0 || filters.productTypes.length > 0 || 
               filters.minPrice !== filterOptions.priceRange.min || 
               filters.maxPrice !== filterOptions.priceRange.max) && (
