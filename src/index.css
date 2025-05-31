@@ -1,7 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+  font-family: nb;
+  src: url(/public/montserrat_n4.1d581f6d4bf1a97f4cbc0b88b933bc136d38d178.woff2) format('truetype');
+  /* Add more font formats for broader browser support */
+  /* e.g., woff, woff2, etc. */
+}
 
+.jiji{
+  font-family: nb;
+  font-weight: 50;
+}
 @layer base {
   html {
     font-family: 'Montserrat', sans-serif;

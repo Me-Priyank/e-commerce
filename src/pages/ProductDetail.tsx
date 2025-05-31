@@ -212,9 +212,9 @@ const ProductDetail: React.FC = () => {
               <h3 className="text-sm text-black mb-3">Quantity</h3>
               <div >
                 <div className='flex flex-row w-full'>
-                <div className="flex items-center border border-gray-300 w-32">
+                <div className="flex items-center border border-gray-900 w-32 rounded">
                 <button 
-                  className="w-10 h-10 flex items-center justify-center border-r border-gray-300 hover:bg-gray-50 transition-colors"
+                  className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors text-2xl"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 >
                   -
@@ -224,10 +224,10 @@ const ProductDetail: React.FC = () => {
                   min="1"
                   value={quantity}
                   onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-12 h-10 text-center border-none focus:ring-0 focus:outline-none"
+                  className="w-12 h-10 text-center border-none focus:ring-0 focus:outline-none bg-[#f9f2e8] pl-4"
                 />
                 <button 
-                  className="w-10 h-10 flex items-center justify-center border-l border-gray-300 hover:bg-gray-50 transition-colors"
+                  className="w-10 h-10 flex items-center justify-center  hover:bg-gray-50 transition-colors text-2xl"
                   onClick={() => setQuantity(quantity + 1)}
                 >
                   +
@@ -236,7 +236,7 @@ const ProductDetail: React.FC = () => {
               <div className='w-full ml-8'>
               <button 
                 onClick={handleAddToCart}
-                className="w-full bg-white border border-black text-black py-3 px-6 font-medium hover:bg-black hover:text-white transition-all duration-200"
+                className="w-full bg-[#f9f2e8] border border-black text-black py-3 px-6 font-medium hover:bg-black hover:text-white transition-all duration-200 rounded"
               >
                 ADD TO CART
               </button>
@@ -350,11 +350,11 @@ const ProductDetail: React.FC = () => {
         </button>
       </div>
     </div>
-    <div className='px-10'>
+    <div className='px-20'>
       {/* Related Products */}
       {relatedProducts.length > 0 && (
           <div className="mt-20">
-            <h2 className="text-5xl font-medium text-center mb-12">You Might Also Like</h2>
+            <p className=" text-center mb-12 jiji text-5xl">You Might Also Like</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
               {relatedProducts.map(relatedProduct => (
                 <ProductCard key={relatedProduct.id} product={relatedProduct} />

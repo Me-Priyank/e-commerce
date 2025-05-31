@@ -154,24 +154,7 @@ const Home: React.FC = () => {
                     )}
                   </div>
                   
-                  {/* Colors available */}
-                  {product.colors && product.colors.length > 0 && (
-                    <div className="flex gap-1 mt-2">
-                      {product.colors.slice(0, 4).map((color: string, index: number) => (
-                        <div
-                          key={index}
-                          className="w-4 h-4 rounded-full border border-gray-300"
-                          style={{ backgroundColor: color.toLowerCase() }}
-                          title={color}
-                        ></div>
-                      ))}
-                      {product.colors.length > 4 && (
-                        <span className="text-xs text-gray-500 ml-1">
-                          +{product.colors.length - 4} more
-                        </span>
-                      )}
-                    </div>
-                  )}
+                  
                 </div>
               </div>
             ))}

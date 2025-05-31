@@ -226,9 +226,9 @@ const AllProducts: React.FC = () => {
         <div className="w-20 h-[2px] bg-gold mx-auto mt-3 mb-4"></div>
       </div>
 
-      <div className="flex flex-col justify-between lg:flex-row gap-8">
+      <div className="flex flex-col justify-between lg:flex-row gap-8 px-10">
         {/* Filters Sidebar */}
-        <div className="w-full  bg-[#f9f2e8] p-7 h-fit -ml-[12%] flex flex-col gap-4">
+        <div className="w-full  bg-[#f9f2e8] p-5 h-fit -ml-[12%] flex flex-col gap-4">
           <div className="flex items-center justify-between mb-6 lg:w-[20vw]">
             <h2 className="text-4xl font-semibold">Filters</h2>
             {(filters.colors.length > 0 || filters.productTypes.length > 0 || 
@@ -316,14 +316,14 @@ const AllProducts: React.FC = () => {
             {expandedSections.productType && (
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {filterOptions.productTypes.map((type) => (
-                  <label key={type} className="flex items-center cursor-pointer">
+                  <label key={type} className="flex items-center cursor-pointer ">
                     <input
                       type="checkbox"
                       checked={filters.productTypes.includes(type)}
                       onChange={() => handleProductTypeFilter(type)}
-                      className="mr-3 accent-gold"
+                      className="mr-3 accent-[#f9f2e8] bg-[#f9f2e8] h-5 w-5"
                     />
-                    <span className="text-sm capitalize">{type}</span>
+                    <span className="text-sm capitalize ">{type}</span>
                   </label>
                 ))}
               </div>
@@ -369,7 +369,7 @@ const AllProducts: React.FC = () => {
         {/* Products Grid */}
         <div className="flex-1">
           {/* Sort Options */}
-          <div className="flex justify-between items-center mb-6 bg-[#f9f2e8]">
+          <div className="flex justify-between items-center mb-6 bg-[#f9f2e8] ">
             
             <select
               value={sortBy}
@@ -385,7 +385,7 @@ const AllProducts: React.FC = () => {
 
           {filteredProducts.length > 0 ? (
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 w-[70vw]"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 w-[70vw] pr-10"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
