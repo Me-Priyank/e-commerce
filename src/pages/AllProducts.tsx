@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
-import Range  from 'rc-slider';
+import  Range   from 'rc-slider';
+import  Slider   from 'rc-slider';
+
 import 'rc-slider/assets/index.css';
 import ProductCard from "../components/ProductCard";
 import { getAllProducts } from "../data/products";
@@ -279,7 +281,7 @@ const AllProducts: React.FC = () => {
               ...prev, 
               minPrice: Math.min(Number(e.target.value), prev.maxPrice) 
             }))}
-            className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold"
+            className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold bg-[#f2ede7]"
             min={filterOptions.priceRange.min}
             max={filterOptions.priceRange.max}
           />
@@ -297,7 +299,7 @@ const AllProducts: React.FC = () => {
               ...prev, 
               maxPrice: Math.max(Number(e.target.value), prev.minPrice) 
             }))}
-            className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold"
+            className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold bg-[#f2ede7]"
             min={filterOptions.priceRange.min}
             max={filterOptions.priceRange.max}
           />

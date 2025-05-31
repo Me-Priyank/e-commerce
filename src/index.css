@@ -30,12 +30,12 @@
 }
 /* rc-slider-custom.css */
 .rc-slider-track {
-  background-color: #D4AF37 !important;
+  background-color: #000000 !important;
   height: 4px !important;
 }
 
 .rc-slider-rail {
-  background-color: #e5e5e5 !important;
+  background-color: #000000 !important;
   height: 4px !important;
 }
 
@@ -43,8 +43,8 @@
   width: 16px !important;
   height: 16px !important;
   margin-top: -6px !important;
-  border: solid 2px #D4AF37 !important;
-  background-color: white !important;
+  border: solid 2px #000000 !important;
+  background-color: rgb(0, 0, 0) !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
 }
 
