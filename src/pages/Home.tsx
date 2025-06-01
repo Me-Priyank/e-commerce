@@ -55,7 +55,7 @@ const Home: React.FC = () => {
               Discover our exquisite collection of handcrafted ethnic wear
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-40">
-              <Link to="/all" className="btn-primary">Shop Now</Link>
+              <Link to="/collection/all" className="btn-primary">Shop Now</Link>
             </div>
           </motion.div>
         </div>
@@ -163,7 +163,7 @@ const Home: React.FC = () => {
 
         <div className="text-center">
           <Link 
-            to="/all" 
+            to="/collection/all" 
             className="inline-block px-6 py-3 text-sm font-medium tracking-wider text-black border border-black hover:bg-black hover:text-white transition-colors duration-300 rounded-lg mt-5"
           >
             Shop All Products

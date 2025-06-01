@@ -50,7 +50,7 @@ function AppRoutes() {
       >
         <Route index element={<Home />} />
         <Route path="home" element={<Home />} />
-        <Route path="all" element={<AllProducts />} />
+        <Route path="/collection/all" element={<AllProducts />} />
         <Route path="collection/:category" element={<CollectionPage />} />
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="about" element={<About />} />

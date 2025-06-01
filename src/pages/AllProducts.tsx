@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
-import  Range   from 'rc-slider';
-import  Slider   from 'rc-slider';
+import Range from 'rc-slider';
+import Slider from 'rc-slider';
 
 import 'rc-slider/assets/index.css';
 import ProductCard from "../components/ProductCard";
@@ -32,7 +32,7 @@ const AllProducts: React.FC = () => {
     productTypes: [],
     priceRange: { min: 0, max: 100000 }
   });
-  
+
   const [filters, setFilters] = useState<FilterState>({
     minPrice: 0,
     maxPrice: 100000,
@@ -56,7 +56,7 @@ const AllProducts: React.FC = () => {
         const allProducts = await getAllProducts();
         setProducts(allProducts);
         setFilteredProducts(allProducts);
-        
+
         // Extract filter options from products
         const colors = [...new Set(allProducts.flatMap(p => p.colors))];
         const productTypes = [...new Set(allProducts.map(p => p.category))];
@@ -65,7 +65,7 @@ const AllProducts: React.FC = () => {
           min: Math.min(...prices),
           max: Math.max(...prices)
         };
-        
+
         setFilterOptions({ colors, productTypes, priceRange });
         setFilters(prev => ({
           ...prev,
@@ -83,9 +83,9 @@ const AllProducts: React.FC = () => {
 
   // Apply filters
   const applyFilters = async () => {
-    if (filters.colors.length === 0 && filters.productTypes.length === 0 && 
-        filters.minPrice === filterOptions.priceRange.min && 
-        filters.maxPrice === filterOptions.priceRange.max) {
+    if (filters.colors.length === 0 && filters.productTypes.length === 0 &&
+      filters.minPrice === filterOptions.priceRange.min &&
+      filters.maxPrice === filterOptions.priceRange.max) {
       setFilteredProducts(products);
       return;
     }
@@ -111,10 +111,10 @@ const AllProducts: React.FC = () => {
         const isSale = apiProduct.price.originalAmount > apiProduct.price.amount;
         const discount = isSale
           ? Math.round(
-              ((apiProduct.price.originalAmount - apiProduct.price.amount) /
-                apiProduct.price.originalAmount) *
-                100
-            )
+            ((apiProduct.price.originalAmount - apiProduct.price.amount) /
+              apiProduct.price.originalAmount) *
+            100
+          )
           : undefined;
 
         return {
@@ -217,7 +217,7 @@ const AllProducts: React.FC = () => {
       'teal': '#008080',
       'fuchsia': '#FF00FF'
     };
-    
+
     return colorMap[color.toLowerCase()] || color;
   };
 
@@ -241,20 +241,20 @@ const AllProducts: React.FC = () => {
 
       <div className="flex flex-col justify-between lg:flex-row gap-8 px-8">
         {/* Filters Sidebar */}
-        <div className="w-full  bg-[#f9f2e8] p-5 h-fit -ml-[12%] flex flex-col gap-4">
+        <div className="w-[30%]  bg-[#f9f2e8] p-5 h-fit -ml-[12%] flex flex-col gap-4">
           <div className="flex items-center justify-between mb-6 lg:w-[18vw]">
             <h2 className="text-3xl font-semibold jiji ">Filters</h2>
-            {(filters.colors.length > 0 || filters.productTypes.length > 0 || 
-              filters.minPrice !== filterOptions.priceRange.min || 
+            {(filters.colors.length > 0 || filters.productTypes.length > 0 ||
+              filters.minPrice !== filterOptions.priceRange.min ||
               filters.maxPrice !== filterOptions.priceRange.max) && (
-              <button
-                onClick={clearAllFilters}
-                className="text-sm text-gold hover:underline flex items-center gap-1"
-              >
-                <X size={14} />
-                Clear All
-              </button>
-            )}
+                <button
+                  onClick={clearAllFilters}
+                  className="text-sm text-gold hover:underline flex items-center gap-1"
+                >
+                  <X size={14} />
+                  Clear All
+                </button>
+              )}
           </div>
 
           {/* Price Filter */}
@@ -266,59 +266,59 @@ const AllProducts: React.FC = () => {
               <span>Price</span>
               {expandedSections.price ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </button>
-            
+
             {expandedSections.price && (
-  <div className="space-y-4">
-    <div className="flex items-center gap-2">
-      <div className="flex-1">
-        <label className="block text-sm text-gray-600 mb-1">Min</label>
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
-          <input
-            type="number"
-            value={filters.minPrice}
-            onChange={(e) => setFilters(prev => ({ 
-              ...prev, 
-              minPrice: Math.min(Number(e.target.value), prev.maxPrice) 
-            }))}
-            className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold bg-[#f2ede7]"
-            min={filterOptions.priceRange.min}
-            max={filterOptions.priceRange.max}
-          />
-        </div>
-      </div>
-      <span className="text-gray-500 mt-6">To</span>
-      <div className="flex-1">
-        <label className="block text-sm text-gray-600 mb-1">Max</label>
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
-          <input
-            type="number"
-            value={filters.maxPrice}
-            onChange={(e) => setFilters(prev => ({ 
-              ...prev, 
-              maxPrice: Math.max(Number(e.target.value), prev.minPrice) 
-            }))}
-            className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold bg-[#f2ede7]"
-            min={filterOptions.priceRange.min}
-            max={filterOptions.priceRange.max}
-          />
-        </div>
-      </div>
-    </div>
-    
-    {/* Dual Range Slider */}
-    <div className="px-2 py-4">
-      <Range
-        min={filterOptions.priceRange.min}
-        max={filterOptions.priceRange.max}
-        value={[filters.minPrice, filters.maxPrice]}
-        onChange={handleRangeChange}
-        allowCross={false}
-      />
-    </div>
-  </div>
-)}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <div className="flex-1">
+                    <label className="block text-sm text-gray-600 mb-1">Min</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+                      <input
+                        type="number"
+                        value={filters.minPrice}
+                        onChange={(e) => setFilters(prev => ({
+                          ...prev,
+                          minPrice: Math.min(Number(e.target.value), prev.maxPrice)
+                        }))}
+                        className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold bg-[#f2ede7]"
+                        min={filterOptions.priceRange.min}
+                        max={filterOptions.priceRange.max}
+                      />
+                    </div>
+                  </div>
+                  <span className="text-gray-500 mt-6">To</span>
+                  <div className="flex-1">
+                    <label className="block text-sm text-gray-600 mb-1">Max</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+                      <input
+                        type="number"
+                        value={filters.maxPrice}
+                        onChange={(e) => setFilters(prev => ({
+                          ...prev,
+                          maxPrice: Math.max(Number(e.target.value), prev.minPrice)
+                        }))}
+                        className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold bg-[#f2ede7]"
+                        min={filterOptions.priceRange.min}
+                        max={filterOptions.priceRange.max}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dual Range Slider */}
+                <div className="px-2 py-4">
+                  <Range
+                    min={filterOptions.priceRange.min}
+                    max={filterOptions.priceRange.max}
+                    value={[filters.minPrice, filters.maxPrice]}
+                    onChange={handleRangeChange}
+                    allowCross={false}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Product Type Filter */}
@@ -330,7 +330,7 @@ const AllProducts: React.FC = () => {
               <span>Product Type</span>
               {expandedSections.productType ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </button>
-            
+
             {expandedSections.productType && (
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {filterOptions.productTypes.map((type) => (
@@ -357,24 +357,22 @@ const AllProducts: React.FC = () => {
               <span>Color</span>
               {expandedSections.color ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </button>
-            
+
             {expandedSections.color && (
               <div className="grid grid-cols-4 gap-2">
                 {filterOptions.colors.map((color) => (
                   <button
                     key={color}
                     onClick={() => handleColorFilter(color)}
-                    className={`relative w-8 h-8 rounded-full border-2 ${
-                      filters.colors.includes(color) ? 'border-gold border-4' : 'border-gray-300'
-                    } ${color.toLowerCase() === 'white' ? 'shadow-md' : ''}`}
+                    className={`relative w-8 h-8 rounded-full border-2 ${filters.colors.includes(color) ? 'border-gold border-4' : 'border-gray-300'
+                      } ${color.toLowerCase() === 'white' ? 'shadow-md' : ''}`}
                     style={{ backgroundColor: getColorStyle(color) }}
                     title={color}
                   >
                     {filters.colors.includes(color) && (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className={`w-2 h-2 rounded-full ${
-                          ['white', 'yellow', 'lime', 'aqua'].includes(color.toLowerCase()) ? 'bg-gray-800' : 'bg-white'
-                        }`}></div>
+                        <div className={`w-2 h-2 rounded-full ${['white', 'yellow', 'lime', 'aqua'].includes(color.toLowerCase()) ? 'bg-gray-800' : 'bg-white'
+                          }`}></div>
                       </div>
                     )}
                   </button>
@@ -388,7 +386,7 @@ const AllProducts: React.FC = () => {
         <div className="flex-1">
           {/* Sort Options */}
           <div className="flex justify-between items-center mb-6 bg-[#f9f2e8] ">
-            
+
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}

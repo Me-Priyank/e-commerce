@@ -9,6 +9,13 @@ import { useCart } from "../context/CartContext";
 import { apiRequest } from "../utils/apiCall";
 import { API_URL } from "../constants";
 
+// Define types for the API response
+interface ApiParams {
+  category: string[];
+  occasions: string[];
+  colorVariants: string[];
+}
+
 const Header: React.FC = () => {
   const { getTotalItems, setIsCartOpen, isLoading } = useCart();
 
@@ -18,6 +25,10 @@ const Header: React.FC = () => {
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const [showContactMenu, setShowContactMenu] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  
+  // State for API data
+  const [categories, setCategories] = useState<string[]>([]);
+  const [occasions, setOccasions] = useState<string[]>([]);
 
   const location = useLocation();
   const lastScrollYRef = useRef(0);
@@ -102,20 +113,29 @@ const Header: React.FC = () => {
 
   const totalItems = getTotalItems();
 
-  const getCateroyAndOccasaions = async () => {
+  const getCategoryAndOccasions = async () => {
     try {
       const response = await apiRequest(API_URL + "/products/get-params", {
         method: "GET",
       });
 
       console.log({ response }, "categories and occasions");
+      
+      // Set the categories and occasions from API response
+      if (response?.category) {
+        setCategories(response.category);
+      }
+      if (response?.occasions) {
+        setOccasions(response.occasions);
+      }
     } catch (error) {
       console.error("Error fetching products:", error);
-      return [];
+      
     }
   };
+
   useEffect(() => {
-    getCateroyAndOccasaions();
+    getCategoryAndOccasions();
   }, []);
 
   return (
@@ -173,7 +193,12 @@ const Header: React.FC = () => {
                     />
                   </svg>
                 </button>
-                {showCategoryMenu && <CategoryMenu />}
+                {showCategoryMenu && (
+                  <CategoryMenu 
+                    categories={categories} 
+                    occasions={occasions} 
+                  />
+                )}
               </div>
             </div>
             <div className="flex gap-8  ">
@@ -270,48 +295,15 @@ const Header: React.FC = () => {
               </button>
               {showCategoryMenu && (
                 <div className="pl-4 space-y-2">
-                  <NavLink
-                    to="/collection/lehenga"
-                    className="block py-1 text-sm hover:text-gold"
-                  >
-                    Lehenga
-                  </NavLink>
-                  <NavLink
-                    to="/collection/saree"
-                    className="block py-1 text-sm hover:text-gold"
-                  >
-                    Saree
-                  </NavLink>
-                  <NavLink
-                    to="/collection/cape"
-                    className="block py-1 text-sm hover:text-gold"
-                  >
-                    Cape
-                  </NavLink>
-                  <NavLink
-                    to="/collection/palazzo"
-                    className="block py-1 text-sm hover:text-gold"
-                  >
-                    Palazzo
-                  </NavLink>
-                  <NavLink
-                    to="/collection/kaftan"
-                    className="block py-1 text-sm hover:text-gold"
-                  >
-                    Kaftan
-                  </NavLink>
-                  <NavLink
-                    to="/collection/jacket"
-                    className="block py-1 text-sm hover:text-gold"
-                  >
-                    Jacket
-                  </NavLink>
-                  <NavLink
-                    to="/collection/sharara"
-                    className="block py-1 text-sm hover:text-gold"
-                  >
-                    Sharara
-                  </NavLink>
+                  {categories.map((category) => (
+                    <NavLink
+                      key={category}
+                      to={`/collection/${category.toLowerCase()}`}
+                      className="block py-1 text-sm hover:text-gold capitalize"
+                    >
+                      {category}
+                    </NavLink>
+                  ))}
                 </div>
               )}
               <NavLink to="/about" className="nav-link py-2">
