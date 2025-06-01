@@ -20,6 +20,14 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ categories, occasions }) =>
       transition={{ duration: 0.2 }}
     >
       <div className="py-2">
+        {/* All Products Link */}
+        <NavLink
+          to="/collection/all"
+          className="block px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-black transition-colors"
+        >
+          All Products
+        </NavLink>
+
         {/* Shop By Category */}
         <div 
           className="relative"
@@ -47,7 +55,7 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ categories, occasions }) =>
                   {categories.map((category) => (
                     <NavLink
                       key={category}
-                      to={`/collection/${category.toLowerCase()}`}
+                      to={`/collection/all?category=${encodeURIComponent(category.toLowerCase())}`}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black transition-colors capitalize"
                     >
                       {category}
@@ -86,7 +94,7 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ categories, occasions }) =>
                   {occasions.map((occasion) => (
                     <NavLink
                       key={occasion}
-                      to={`/occasion/${occasion.toLowerCase()}`}
+                      to={`/collection/all?occasion=${encodeURIComponent(occasion.toLowerCase())}`}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black transition-colors capitalize"
                     >
                       {occasion}

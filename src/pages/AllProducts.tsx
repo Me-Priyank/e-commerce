@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import Range from 'rc-slider';
@@ -36,6 +37,7 @@ interface ApiFilterOptions {
 }
 
 const AllProducts: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState<any[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,6 +68,53 @@ const AllProducts: React.FC = () => {
 
   const [sortBy, setSortBy] = useState<string>("featured");
 
+  // Initialize filters from URL parameters
+  const initializeFiltersFromURL = () => {
+    const categoryParam = searchParams.get('category');
+    const occasionParam = searchParams.get('occasion');
+    const colorParam = searchParams.get('color');
+    const sizeParam = searchParams.get('size');
+    const minPriceParam = searchParams.get('minPrice');
+    const maxPriceParam = searchParams.get('maxPrice');
+
+    const initialFilters: FilterState = {
+      minPrice: minPriceParam ? parseInt(minPriceParam) : 0,
+      maxPrice: maxPriceParam ? parseInt(maxPriceParam) : 100000,
+      colors: colorParam ? colorParam.split(',') : [],
+      productTypes: categoryParam ? categoryParam.split(',') : [],
+      sizes: sizeParam ? sizeParam.split(',') : [],
+      occasions: occasionParam ? occasionParam.split(',') : []
+    };
+
+    setFilters(initialFilters);
+  };
+
+  // Update URL when filters change
+  const updateURL = (newFilters: FilterState) => {
+    const params = new URLSearchParams();
+    
+    if (newFilters.productTypes.length > 0) {
+      params.set('category', newFilters.productTypes.join(','));
+    }
+    if (newFilters.occasions.length > 0) {
+      params.set('occasion', newFilters.occasions.join(','));
+    }
+    if (newFilters.colors.length > 0) {
+      params.set('color', newFilters.colors.join(','));
+    }
+    if (newFilters.sizes.length > 0) {
+      params.set('size', newFilters.sizes.join(','));
+    }
+    if (newFilters.minPrice !== 0) {
+      params.set('minPrice', newFilters.minPrice.toString());
+    }
+    if (newFilters.maxPrice !== 100000) {
+      params.set('maxPrice', newFilters.maxPrice.toString());
+    }
+
+    setSearchParams(params);
+  };
+
   // Fetch filter options from API
   const fetchFilterOptions = async () => {
     try {
@@ -84,15 +133,8 @@ const AllProducts: React.FC = () => {
         productTypes: apiFilterOptions.category || [],
         sizes: apiFilterOptions.sizeVariants || [],
         occasions: apiFilterOptions.occasions || [],
-        priceRange: { min: 0, max: 100000 } // You might want to get this from API too
+        priceRange: { min: 0, max: 100000 }
       });
-
-      // Initialize filters with default values
-      setFilters(prev => ({
-        ...prev,
-        minPrice: 0,
-        maxPrice: 100000
-      }));
 
     } catch (error) {
       console.error("Error fetching filter options:", error);
@@ -112,15 +154,12 @@ const AllProducts: React.FC = () => {
     try {
       const allProducts = await getAllProducts();
       setProducts(allProducts);
-      
-      // If we want to show all products initially, uncomment the line below
-      // setFilteredProducts(allProducts);
     } catch (error) {
       console.error("Error fetching initial products:", error);
     }
   };
 
-  // Fetch initial data
+  // Fetch initial data and initialize filters from URL
   useEffect(() => {
     const fetchInitialData = async () => {
       setIsLoading(true);
@@ -130,8 +169,8 @@ const AllProducts: React.FC = () => {
           fetchInitialProducts()
         ]);
         
-        // Apply initial filters (this will fetch filtered products)
-        await applyFilters();
+        // Initialize filters from URL after options are loaded
+        initializeFiltersFromURL();
       } catch (error) {
         console.error("Error fetching initial data:", error);
       }
@@ -140,6 +179,15 @@ const AllProducts: React.FC = () => {
 
     fetchInitialData();
   }, []);
+
+  // Apply filters whenever filter state changes (but not on initial mount)
+  useEffect(() => {
+    if (filterOptions.colors.length > 0 || filterOptions.productTypes.length > 0 || 
+        filterOptions.sizes.length > 0 || filterOptions.occasions.length > 0) {
+      applyFilters();
+      updateURL(filters);
+    }
+  }, [filters]);
 
   // Apply filters by calling the filter API
   const applyFilters = async () => {
@@ -196,21 +244,12 @@ const AllProducts: React.FC = () => {
         const colorMatch = filters.colors.length === 0 || filters.colors.some(color => product.colors.includes(color));
         const typeMatch = filters.productTypes.length === 0 || filters.productTypes.includes(product.category);
         const sizeMatch = filters.sizes.length === 0 || filters.sizes.some(size => product.sizes.includes(size));
-        // Note: You'll need to add occasions field to your product data structure for this to work
         const occasionMatch = filters.occasions.length === 0 || filters.occasions.some(occasion => product.occasions?.includes(occasion));
         return priceMatch && colorMatch && typeMatch && sizeMatch && occasionMatch;
       });
       setFilteredProducts(filtered);
     }
   };
-
-  // Apply filters whenever filter state changes
-  useEffect(() => {
-    if (filterOptions.colors.length > 0 || filterOptions.productTypes.length > 0 || 
-        filterOptions.sizes.length > 0 || filterOptions.occasions.length > 0) {
-      applyFilters();
-    }
-  }, [filters]);
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
@@ -266,14 +305,16 @@ const AllProducts: React.FC = () => {
   };
 
   const clearAllFilters = () => {
-    setFilters({
+    const clearedFilters = {
       minPrice: filterOptions.priceRange.min,
       maxPrice: filterOptions.priceRange.max,
       colors: [],
       productTypes: [],
       sizes: [],
       occasions: []
-    });
+    };
+    setFilters(clearedFilters);
+    setSearchParams(new URLSearchParams()); // Clear URL parameters
   };
 
   if (isLoading) {
