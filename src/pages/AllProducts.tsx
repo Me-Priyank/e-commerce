@@ -23,6 +23,14 @@ interface FilterOptions {
   priceRange: { min: number; max: number };
 }
 
+interface ApiFilterOptions {
+  category: string[];
+  subCategory: string[];
+  colorVariants: string[];
+  sizeVariants: string[];
+  occasions: string[];
+}
+
 const AllProducts: React.FC = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
@@ -48,32 +56,70 @@ const AllProducts: React.FC = () => {
 
   const [sortBy, setSortBy] = useState<string>("featured");
 
-  // Fetch initial products and filter options
+  // Fetch filter options from API
+  const fetchFilterOptions = async () => {
+    try {
+      const response = await apiRequest(API_URL + "/products/get-params", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      const apiFilterOptions: ApiFilterOptions = response;
+      
+      // Set filter options from API response
+      setFilterOptions({
+        colors: apiFilterOptions.colorVariants || [],
+        productTypes: apiFilterOptions.category || [],
+        priceRange: { min: 0, max: 100000 } // You might want to get this from API too
+      });
+
+      // Initialize filters with default values
+      setFilters(prev => ({
+        ...prev,
+        minPrice: 0,
+        maxPrice: 100000
+      }));
+
+    } catch (error) {
+      console.error("Error fetching filter options:", error);
+      // Fallback to empty arrays if API fails
+      setFilterOptions({
+        colors: [],
+        productTypes: [],
+        priceRange: { min: 0, max: 100000 }
+      });
+    }
+  };
+
+  // Fetch initial products (if needed for fallback)
+  const fetchInitialProducts = async () => {
+    try {
+      const allProducts = await getAllProducts();
+      setProducts(allProducts);
+      
+      // If we want to show all products initially, uncomment the line below
+      // setFilteredProducts(allProducts);
+    } catch (error) {
+      console.error("Error fetching initial products:", error);
+    }
+  };
+
+  // Fetch initial data
   useEffect(() => {
     const fetchInitialData = async () => {
       setIsLoading(true);
       try {
-        const allProducts = await getAllProducts();
-        setProducts(allProducts);
-        setFilteredProducts(allProducts);
-
-        // Extract filter options from products
-        const colors = [...new Set(allProducts.flatMap(p => p.colors))];
-        const productTypes = [...new Set(allProducts.map(p => p.category))];
-        const prices = allProducts.map(p => p.price);
-        const priceRange = {
-          min: Math.min(...prices),
-          max: Math.max(...prices)
-        };
-
-        setFilterOptions({ colors, productTypes, priceRange });
-        setFilters(prev => ({
-          ...prev,
-          minPrice: priceRange.min,
-          maxPrice: priceRange.max
-        }));
+        await Promise.all([
+          fetchFilterOptions(),
+          fetchInitialProducts()
+        ]);
+        
+        // Apply initial filters (this will fetch filtered products)
+        await applyFilters();
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Error fetching initial data:", error);
       }
       setIsLoading(false);
     };
@@ -81,15 +127,8 @@ const AllProducts: React.FC = () => {
     fetchInitialData();
   }, []);
 
-  // Apply filters
+  // Apply filters by calling the filter API
   const applyFilters = async () => {
-    if (filters.colors.length === 0 && filters.productTypes.length === 0 &&
-      filters.minPrice === filterOptions.priceRange.min &&
-      filters.maxPrice === filterOptions.priceRange.max) {
-      setFilteredProducts(products);
-      return;
-    }
-
     try {
       const filterPayload = {
         minPrice: filters.minPrice,
@@ -123,7 +162,7 @@ const AllProducts: React.FC = () => {
           price: apiProduct.price.amount,
           images: apiProduct.images,
           colors: apiProduct.variants.colors.map((c: any) => c.name),
-          sizes: apiProduct.variants.sizes?.map((s: any) => s.name),
+          sizes: apiProduct.variants.sizes?.map((s: any) => s.name) || [],
           category: apiProduct.category,
           description: apiProduct.description,
           isNew: apiProduct.details?.isNewArrival,
@@ -135,7 +174,7 @@ const AllProducts: React.FC = () => {
       setFilteredProducts(transformedProducts);
     } catch (error) {
       console.error("Error applying filters:", error);
-      // Fallback to client-side filtering
+      // Fallback to client-side filtering if API fails
       const filtered = products.filter(product => {
         const priceMatch = product.price >= filters.minPrice && product.price <= filters.maxPrice;
         const colorMatch = filters.colors.length === 0 || filters.colors.some(color => product.colors.includes(color));
@@ -146,9 +185,12 @@ const AllProducts: React.FC = () => {
     }
   };
 
+  // Apply filters whenever filter state changes
   useEffect(() => {
-    applyFilters();
-  }, [filters, products]);
+    if (filterOptions.colors.length > 0 || filterOptions.productTypes.length > 0) {
+      applyFilters();
+    }
+  }, [filters]);
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
@@ -184,6 +226,7 @@ const AllProducts: React.FC = () => {
       }));
     }
   };
+
   const clearAllFilters = () => {
     setFilters({
       minPrice: filterOptions.priceRange.min,
@@ -210,6 +253,8 @@ const AllProducts: React.FC = () => {
       'gold': '#D4AF37',
       'silver': '#C0C0C0',
       'navy': '#000080',
+      'navy blue': '#000080',
+      'golden': '#FFD700',
       'maroon': '#800000',
       'olive': '#808000',
       'lime': '#00FF00',
@@ -386,7 +431,6 @@ const AllProducts: React.FC = () => {
         <div className="flex-1">
           {/* Sort Options */}
           <div className="flex justify-between items-center mb-6 bg-[#f9f2e8] ">
-
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
