@@ -106,35 +106,35 @@ const ProductDetail: React.FC = () => {
       return;
     }
 
-    const cartItem = {
-      userId: user.id,
-      productVariantId: product.id,
-      quantity: quantity,
-      savedForLater: true,
-    };
     // const cartItem = {
-    //   id: product.id,
-    //   name: product.name,
-    //   price: product.price,
-    //   image: product.images[0],
-    //   selectedSize,
-    //   quantity,
-    //   category: product.category,
+    //   userId: user.id,
+    //   productVariantId: product.id,
+    //   quantity: quantity,
+    //   savedForLater: true,
     // };
+    const cartItem = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images[0],
+      selectedSize,
+      quantity,
+      category: product.category,
+    };
 
-    try {
-      const response = await apiRequest(APP_URL + "/api/cart/manage", {
-        method: "POST",
-        body: cartItem,
-      });
-      setIsCartOpen(true);
-      console.log({ response });
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      return [];
-    }
-    // addToCart(cartItem);
-
+    // try {
+    //   const response = await apiRequest(APP_URL + "/api/cart/manage", {
+    //     method: "POST",
+    //     body: cartItem,
+    //   });
+    //   setIsCartOpen(true);
+    //   console.log({ response });
+    // } catch (error) {
+    //   console.error("Error fetching products:", error);
+    //   return [];
+    // }
+    addToCart(cartItem);
+    setIsCartOpen(true);
     // Open the cart drawer after adding item
 
     // Optional: Remove the alert since cart will open

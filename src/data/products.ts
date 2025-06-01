@@ -23,7 +23,10 @@ async function fetchProducts(): Promise<Product[]> {
   }
 
   try {
-    const response = await apiRequest(API_URL + "/products");
+    const response = await apiRequest(API_URL + "/products/filter", {
+      method: "POST",
+      body: {},
+    });
     console.log({ response });
     // if (!response.ok) throw new Error("Failed to fetch products");
 
