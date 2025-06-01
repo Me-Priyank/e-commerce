@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
-import Logo from './Logo';
-import CategoryMenu from './CategoryMenu';
-import ContactMenu from './ContactMenu';
-import SearchBar from './SearchBar';
-import { useCart } from '../context/CartContext';
+import React, { useState, useEffect, useRef } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { Search, ShoppingBag, User, Menu, X } from "lucide-react";
+import Logo from "./Logo";
+import CategoryMenu from "./CategoryMenu";
+import ContactMenu from "./ContactMenu";
+import SearchBar from "./SearchBar";
+import { useCart } from "../context/CartContext";
+import { apiRequest } from "../utils/apiCall";
+import { API_URL } from "../constants";
 
 const Header: React.FC = () => {
   const { getTotalItems, setIsCartOpen, isLoading } = useCart();
@@ -43,7 +45,8 @@ const Header: React.FC = () => {
       }
 
       // Instant response to any scroll direction after initial threshold
-      if (currentScrollY > 100) { // Only start hiding/showing after 100px
+      if (currentScrollY > 100) {
+        // Only start hiding/showing after 100px
         if (scrollDifference > 10) {
           // Scrolling down - hide instantly
           if (isVisible) {
@@ -87,10 +90,10 @@ const Header: React.FC = () => {
     };
 
     // Add passive listener for better performance
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
@@ -99,12 +102,28 @@ const Header: React.FC = () => {
 
   const totalItems = getTotalItems();
 
+  const getCateroyAndOccasaions = async () => {
+    try {
+      const response = await apiRequest(API_URL + "/products/get-params", {
+        method: "GET",
+      });
+
+      console.log({ response }, "categories and occasions");
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      return [];
+    }
+  };
+  useEffect(() => {
+    getCateroyAndOccasaions();
+  }, []);
+
   return (
     <>
       <header
-        className={`sticky top-0 z-40 transition-all duration-300 border-b border-black ease-out ${isScrolled ? 'bg-[#f9f2e8] shadow-md py-2' : 'bg-[#f9f2e8] py-12'
-          } ${isVisible ? 'translate-y-0' : '-translate-y-full'
-          }`}
+        className={`sticky top-0 z-40 transition-all duration-300 border-b border-black ease-out ${
+          isScrolled ? "bg-[#f9f2e8] shadow-md py-2" : "bg-[#f9f2e8] py-12"
+        } ${isVisible ? "translate-y-0" : "-translate-y-full"}`}
       >
         <div className="container-custom flex items-center justify-between">
           {/* Mobile menu button */}
@@ -128,7 +147,9 @@ const Header: React.FC = () => {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8 ">
             <div className="flex gap-8 lg:-ml-[20%]">
-              <NavLink to="/" className="nav-link lg:-mr-0">Home</NavLink>
+              <NavLink to="/" className="nav-link lg:-mr-0">
+                Home
+              </NavLink>
               <div
                 className="relative "
                 onMouseEnter={() => setShowCategoryMenu(true)}
@@ -136,15 +157,29 @@ const Header: React.FC = () => {
               >
                 <button className="nav-link flex items-center lg:mr-[80%]">
                   Shop
-                  <svg className="w-2.5 h-2.5 ml-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                  <svg
+                    className="w-2.5 h-2.5 ml-1"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 10 6"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 1 4 4 4-4"
+                    />
                   </svg>
                 </button>
                 {showCategoryMenu && <CategoryMenu />}
               </div>
             </div>
             <div className="flex gap-8  ">
-              <NavLink to="/about" className="nav-link lg:ml-[130%]">About</NavLink>
+              <NavLink to="/about" className="nav-link lg:ml-[130%]">
+                About
+              </NavLink>
               <div
                 className="relative "
                 onMouseEnter={() => setShowContactMenu(true)}
@@ -152,8 +187,20 @@ const Header: React.FC = () => {
               >
                 <button className="nav-link flex items-center lg:mr-[80%]">
                   Contact
-                  <svg className="w-2.5 h-2.5 ml-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                  <svg
+                    className="w-2.5 h-2.5 ml-1"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 10 6"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 1 4 4 4-4"
+                    />
                   </svg>
                 </button>
                 {showContactMenu && <ContactMenu />}
@@ -162,8 +209,12 @@ const Header: React.FC = () => {
           </nav>
 
           {/* Logo */}
-          <Link to="/" className={`absolute left-1/2 transform -translate-x-1/2 mx-auto transition-all duration-300 ${isScrolled ? '-mt-[14%] lg:-mt-[5%]' : ''
-            }`}>
+          <Link
+            to="/"
+            className={`absolute left-1/2 transform -translate-x-1/2 mx-auto transition-all duration-300 ${
+              isScrolled ? "-mt-[14%] lg:-mt-[5%]" : ""
+            }`}
+          >
             <Logo />
           </Link>
 
@@ -191,29 +242,84 @@ const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="lg:hidden bg-cream absolute top-full left-0 w-full shadow-md z-50">
             <nav className="flex flex-col p-4 space-y-3">
-              <NavLink to="/" className="nav-link py-2">Home</NavLink>
+              <NavLink to="/" className="nav-link py-2">
+                Home
+              </NavLink>
               <button
                 className="flex items-center justify-between w-full py-2 nav-link"
                 onClick={() => setShowCategoryMenu(!showCategoryMenu)}
               >
                 Shop
-                <svg className={`w-2.5 h-2.5 transform transition-transform ${showCategoryMenu ? 'rotate-180' : ''}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                <svg
+                  className={`w-2.5 h-2.5 transform transition-transform ${
+                    showCategoryMenu ? "rotate-180" : ""
+                  }`}
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 10 6"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m1 1 4 4 4-4"
+                  />
                 </svg>
               </button>
               {showCategoryMenu && (
                 <div className="pl-4 space-y-2">
-                  <NavLink to="/collection/lehenga" className="block py-1 text-sm hover:text-gold">Lehenga</NavLink>
-                  <NavLink to="/collection/saree" className="block py-1 text-sm hover:text-gold">Saree</NavLink>
-                  <NavLink to="/collection/cape" className="block py-1 text-sm hover:text-gold">Cape</NavLink>
-                  <NavLink to="/collection/palazzo" className="block py-1 text-sm hover:text-gold">Palazzo</NavLink>
-                  <NavLink to="/collection/kaftan" className="block py-1 text-sm hover:text-gold">Kaftan</NavLink>
-                  <NavLink to="/collection/jacket" className="block py-1 text-sm hover:text-gold">Jacket</NavLink>
-                  <NavLink to="/collection/sharara" className="block py-1 text-sm hover:text-gold">Sharara</NavLink>
+                  <NavLink
+                    to="/collection/lehenga"
+                    className="block py-1 text-sm hover:text-gold"
+                  >
+                    Lehenga
+                  </NavLink>
+                  <NavLink
+                    to="/collection/saree"
+                    className="block py-1 text-sm hover:text-gold"
+                  >
+                    Saree
+                  </NavLink>
+                  <NavLink
+                    to="/collection/cape"
+                    className="block py-1 text-sm hover:text-gold"
+                  >
+                    Cape
+                  </NavLink>
+                  <NavLink
+                    to="/collection/palazzo"
+                    className="block py-1 text-sm hover:text-gold"
+                  >
+                    Palazzo
+                  </NavLink>
+                  <NavLink
+                    to="/collection/kaftan"
+                    className="block py-1 text-sm hover:text-gold"
+                  >
+                    Kaftan
+                  </NavLink>
+                  <NavLink
+                    to="/collection/jacket"
+                    className="block py-1 text-sm hover:text-gold"
+                  >
+                    Jacket
+                  </NavLink>
+                  <NavLink
+                    to="/collection/sharara"
+                    className="block py-1 text-sm hover:text-gold"
+                  >
+                    Sharara
+                  </NavLink>
                 </div>
               )}
-              <NavLink to="/about" className="nav-link py-2">About</NavLink>
-              <NavLink to="/contact" className="nav-link py-2">Contact</NavLink>
+              <NavLink to="/about" className="nav-link py-2">
+                About
+              </NavLink>
+              <NavLink to="/contact" className="nav-link py-2">
+                Contact
+              </NavLink>
             </nav>
           </div>
         )}
