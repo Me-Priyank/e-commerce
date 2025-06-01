@@ -167,7 +167,7 @@ const Header: React.FC = () => {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8 ">
             <div className="flex gap-8 lg:-ml-[20%]">
-              <NavLink to="/" className="nav-link lg:-mr-0">
+              <NavLink to="/" className="nav-link lg:-mr-0"  onClick={() => navigate('/home')}>
                 Home
               </NavLink>
               <div

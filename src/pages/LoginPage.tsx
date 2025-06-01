@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Mail, KeyRound } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
+import { useCart } from '../context/CartContext';
 import axios from 'axios';
 
 // Base API URL - easier to change if needed
@@ -11,6 +12,7 @@ const API_BASE_URL = 'http://13.60.171.89:8080/api/v1';
 export default function LoginPage() {
   // Get the auth context values
   const { isLoggedIn, setIsLoggedIn, userEmail, setUserEmail } = useContext(AuthContext);
+  const { pendingCartAction, setPendingCartAction } = useCart();
   
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,9 +26,16 @@ export default function LoginPage() {
     const storedToken = localStorage.getItem('access_token');
     if (storedToken) {
       setIsLoggedIn(1);
-      navigate('/home');
+      
+      // If there's a pending cart action, execute it, otherwise go to home
+      if (pendingCartAction) {
+        navigate('/home');
+        // The pendingCartAction will be executed by the CartContext useEffect
+      } else {
+        navigate('/home');
+      }
     }
-  }, [navigate, setIsLoggedIn]);
+  }, [navigate, setIsLoggedIn, pendingCartAction]);
 
   const handleEmailSubmit = async () => {
     // Basic validation
@@ -199,8 +208,14 @@ export default function LoginPage() {
         // Update auth context
         setIsLoggedIn(1);
         
-        // Redirect to home page
-        navigate('/home');
+        // Navigate based on whether there's a pending cart action
+        if (pendingCartAction) {
+          // Navigate to home and let the CartContext handle the pending action
+          navigate('/home');
+        } else {
+          // Regular login, go to home page
+          navigate('/home');
+        }
       } else {
         setErrorMessage('Invalid OTP. Please try again.');
       }
@@ -253,7 +268,12 @@ export default function LoginPage() {
       <div className="text-center mb-8">
         <h2 className="text-3xl font-heading text-gray-900">Welcome Back</h2>
         <div className="w-16 h-1 bg-gold mx-auto mt-2"></div>
-        <p className="mt-4 text-gray-600">Enter your email to receive a verification code</p>
+        <p className="mt-4 text-gray-600">
+          {pendingCartAction 
+            ? "Please login to continue with your cart" 
+            : "Enter your email to receive a verification code"
+          }
+        </p>
       </div>
       
       {errorMessage && (
@@ -310,7 +330,9 @@ export default function LoginPage() {
       <div className="text-center mb-8">
         <h2 className="text-3xl font-heading text-gray-900">Verify Your Email</h2>
         <div className="w-16 h-1 bg-gold mx-auto mt-2"></div>
-        <p className="mt-4 text-gray-600">Enter the verification code sent to <span className="font-medium">{userEmail}</span></p>
+        <p className="mt-4 text-gray-600">
+          Enter the verification code sent to <span className="font-medium">{userEmail}</span>
+        </p>
       </div>
       
       {errorMessage && (

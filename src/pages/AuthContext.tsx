@@ -1,13 +1,11 @@
-import { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, ReactNode } from 'react';
 
 interface AuthContextType {
-  isLoggedIn: number;
+  isLoggedIn: number; // 0 = not logged in, 1 = logged in
   setIsLoggedIn: (value: number) => void;
   userEmail: string;
-  setUserEmail: (value: string) => void;
-  userData: any | null;
-  logout: () => void;
-  isLoading: boolean; // Add isLoading to context type
+  setUserEmail: (email: string) => void;
+  isLoading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -15,77 +13,54 @@ export const AuthContext = createContext<AuthContextType>({
   setIsLoggedIn: () => {},
   userEmail: '',
   setUserEmail: () => {},
-  userData: null,
-  logout: () => {},
-  isLoading: true, // Add initial isLoading value
+  isLoading: true,
 });
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<number>(0);
   const [userEmail, setUserEmail] = useState<string>('');
-  const [userData, setUserData] = useState<any | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true); // Add loading state
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Load auth state from localStorage on initial render
   useEffect(() => {
-    const storedToken = localStorage.getItem('access_token');
-    const storedUserData = localStorage.getItem('user_data');
-    const storedEmail = localStorage.getItem('user_email');
-    
-    if (storedToken) {
-      setIsLoggedIn(1);
-      
-      if (storedUserData) {
-        try {
-          setUserData(JSON.parse(storedUserData));
-        } catch (error) {
-          console.error('Error parsing user data:', error);
+    // Check if user is already logged in by checking localStorage
+    const checkAuthStatus = () => {
+      try {
+        const storedToken = localStorage.getItem('access_token');
+        const storedEmail = localStorage.getItem('user_email');
+        
+        if (storedToken && storedEmail) {
+          setIsLoggedIn(1);
+          setUserEmail(storedEmail);
+        } else {
+          setIsLoggedIn(0);
+          setUserEmail('');
         }
+      } catch (error) {
+        console.error('Error checking auth status:', error);
+        setIsLoggedIn(0);
+        setUserEmail('');
+      } finally {
+        setIsLoading(false);
       }
-      
-      if (storedEmail) {
-        setUserEmail(storedEmail);
-      }
-    }
-    setIsLoading(false); // Mark loading as complete after auth check
+    };
+
+    checkAuthStatus();
   }, []);
 
-  // Update localStorage when auth state changes
-  useEffect(() => {
-    if (isLoggedIn === 1) {
-      localStorage.setItem('user_email', userEmail);
-    }
-  }, [isLoggedIn, userEmail]);
-
-  const logout = () => {
-    // Clear auth state
-    setIsLoggedIn(0);
-    setUserEmail('');
-    setUserData(null);
-    
-    // Clear localStorage
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user_data');
-    localStorage.removeItem('user_email');
-    localStorage.removeItem('role');
+  const contextValue: AuthContextType = {
+    isLoggedIn,
+    setIsLoggedIn,
+    userEmail,
+    setUserEmail,
+    isLoading,
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        isLoggedIn,
-        setIsLoggedIn,
-        userEmail,
-        setUserEmail,
-        userData,
-        logout,
-        isLoading, // Include isLoading in context value
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

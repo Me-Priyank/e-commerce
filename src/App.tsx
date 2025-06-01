@@ -13,6 +13,7 @@ import AllProducts from "./pages/AllProducts";
 import { CartProvider } from './context/CartContext';
 import CartDrawer from './components/CartDrawer';
 import { AuthProvider, AuthContext } from "./pages/AuthContext";
+import Account from "./pages/Account";
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
 function AppRoutes() {
   const { isLoggedIn, isLoading } = React.useContext(AuthContext);
 
-  // Protected route component
+  // Protected route component - only for account page
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     if (isLoading) {
       return <div>Loading...</div>; // Show loader during auth check
@@ -43,42 +44,37 @@ function AppRoutes() {
 
   return (
     <CartProvider>
-    <Routes>
-      <Route
-        path="/"
-        element={isLoggedIn === 0 ? <Navigate to="/login" /> : <Layout />}
-      >
-        <Route index element={<Home />} />
-        <Route path="home" element={<Home />} />
-        <Route path="/collection/all" element={<AllProducts />} />
-        <Route path="collection/:category" element={<CollectionPage />} />
-        <Route path="product/:id" element={<ProductDetail />} />
-        <Route path="about" element={<About />} />
-        <Route path="contact" element={<Contact />} />
-        <Route path="book-appointment" element={<BookAppointment />} />
-        <Route path="*" element={<NotFound />} />
-      </Route>
+      <Routes>
+        {/* Main layout routes - accessible to everyone */}
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="home" element={<Home />} />
+          <Route path="/collection/all" element={<AllProducts />} />
+          <Route path="collection/:category" element={<CollectionPage />} />
+          <Route path="product/:id" element={<ProductDetail />} />
+          <Route path="about" element={<About />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="book-appointment" element={<BookAppointment />} />
+          <Route path="*" element={<NotFound />} />
+          
+          {/* Protected account route */}
+          <Route 
+            path="account" 
+            element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            } 
+          />
+        </Route>
 
-      <Route
-        path="/login"
-        element={isLoggedIn === 1 ? <Navigate to="/" /> : <LoginPage />}
-      />
-
-      <Route
-        path="/account"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <div className="container mx-auto py-8 px-4">
-                <h1 className="text-2xl font-bold mb-4">My Account</h1>
-                {/* Account page content here */}
-              </div>
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
-    <CartDrawer />
+        {/* Login page - redirect to home if already logged in */}
+        <Route
+          path="/login"
+          element={isLoggedIn === 1 ? <Navigate to="/account" /> : <LoginPage />}
+        />
+      </Routes>
+      <CartDrawer />
     </CartProvider>
   );
 }
