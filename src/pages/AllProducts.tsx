@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
-import Range from 'rc-slider';
-import Slider from 'rc-slider';
+import Range from "rc-slider";
+import Slider from "rc-slider";
 
-import 'rc-slider/assets/index.css';
+import "rc-slider/assets/index.css";
 import ProductCard from "../components/ProductCard";
 import { getAllProducts } from "../data/products";
 import { API_URL } from "../constants";
@@ -46,7 +46,7 @@ const AllProducts: React.FC = () => {
     productTypes: [],
     sizes: [],
     occasions: [],
-    priceRange: { min: 0, max: 100000 }
+    priceRange: { min: 0, max: 100000 },
   });
 
   const [filters, setFilters] = useState<FilterState>({
@@ -55,7 +55,7 @@ const AllProducts: React.FC = () => {
     colors: [],
     productTypes: [],
     sizes: [],
-    occasions: []
+    occasions: [],
   });
 
   const [expandedSections, setExpandedSections] = useState({
@@ -63,27 +63,27 @@ const AllProducts: React.FC = () => {
     productType: true,
     color: true,
     size: true,
-    occasions: true
+    occasions: true,
   });
 
   const [sortBy, setSortBy] = useState<string>("featured");
 
   // Initialize filters from URL parameters
   const initializeFiltersFromURL = () => {
-    const categoryParam = searchParams.get('category');
-    const occasionParam = searchParams.get('occasion');
-    const colorParam = searchParams.get('color');
-    const sizeParam = searchParams.get('size');
-    const minPriceParam = searchParams.get('minPrice');
-    const maxPriceParam = searchParams.get('maxPrice');
+    const categoryParam = searchParams.get("category");
+    const occasionParam = searchParams.get("occasion");
+    const colorParam = searchParams.get("color");
+    const sizeParam = searchParams.get("size");
+    const minPriceParam = searchParams.get("minPrice");
+    const maxPriceParam = searchParams.get("maxPrice");
 
     const initialFilters: FilterState = {
       minPrice: minPriceParam ? parseInt(minPriceParam) : 0,
       maxPrice: maxPriceParam ? parseInt(maxPriceParam) : 100000,
-      colors: colorParam ? colorParam.split(',') : [],
-      productTypes: categoryParam ? categoryParam.split(',') : [],
-      sizes: sizeParam ? sizeParam.split(',') : [],
-      occasions: occasionParam ? occasionParam.split(',') : []
+      colors: colorParam ? colorParam.split(",") : [],
+      productTypes: categoryParam ? categoryParam.split(",") : [],
+      sizes: sizeParam ? sizeParam.split(",") : [],
+      occasions: occasionParam ? occasionParam.split(",") : [],
     };
 
     setFilters(initialFilters);
@@ -92,24 +92,24 @@ const AllProducts: React.FC = () => {
   // Update URL when filters change
   const updateURL = (newFilters: FilterState) => {
     const params = new URLSearchParams();
-    
+
     if (newFilters.productTypes.length > 0) {
-      params.set('category', newFilters.productTypes.join(','));
+      params.set("category", newFilters.productTypes.join(","));
     }
     if (newFilters.occasions.length > 0) {
-      params.set('occasion', newFilters.occasions.join(','));
+      params.set("occasion", newFilters.occasions.join(","));
     }
     if (newFilters.colors.length > 0) {
-      params.set('color', newFilters.colors.join(','));
+      params.set("color", newFilters.colors.join(","));
     }
     if (newFilters.sizes.length > 0) {
-      params.set('size', newFilters.sizes.join(','));
+      params.set("size", newFilters.sizes.join(","));
     }
     if (newFilters.minPrice !== 0) {
-      params.set('minPrice', newFilters.minPrice.toString());
+      params.set("minPrice", newFilters.minPrice.toString());
     }
     if (newFilters.maxPrice !== 100000) {
-      params.set('maxPrice', newFilters.maxPrice.toString());
+      params.set("maxPrice", newFilters.maxPrice.toString());
     }
 
     setSearchParams(params);
@@ -119,23 +119,22 @@ const AllProducts: React.FC = () => {
   const fetchFilterOptions = async () => {
     try {
       const response = await apiRequest(API_URL + "/products/get-params", {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-        }
+          "Content-Type": "application/json",
+        },
       });
 
       const apiFilterOptions: ApiFilterOptions = response;
-      
+
       // Set filter options from API response
       setFilterOptions({
         colors: apiFilterOptions.colorVariants || [],
         productTypes: apiFilterOptions.category || [],
         sizes: apiFilterOptions.sizeVariants || [],
         occasions: apiFilterOptions.occasions || [],
-        priceRange: { min: 0, max: 100000 }
+        priceRange: { min: 0, max: 100000 },
       });
-
     } catch (error) {
       console.error("Error fetching filter options:", error);
       // Fallback to empty arrays if API fails
@@ -144,7 +143,7 @@ const AllProducts: React.FC = () => {
         productTypes: [],
         sizes: [],
         occasions: [],
-        priceRange: { min: 0, max: 100000 }
+        priceRange: { min: 0, max: 100000 },
       });
     }
   };
@@ -164,11 +163,8 @@ const AllProducts: React.FC = () => {
     const fetchInitialData = async () => {
       setIsLoading(true);
       try {
-        await Promise.all([
-          fetchFilterOptions(),
-          fetchInitialProducts()
-        ]);
-        
+        await Promise.all([fetchFilterOptions(), fetchInitialProducts()]);
+
         // Initialize filters from URL after options are loaded
         initializeFiltersFromURL();
       } catch (error) {
@@ -182,8 +178,12 @@ const AllProducts: React.FC = () => {
 
   // Apply filters whenever filter state changes (but not on initial mount)
   useEffect(() => {
-    if (filterOptions.colors.length > 0 || filterOptions.productTypes.length > 0 || 
-        filterOptions.sizes.length > 0 || filterOptions.occasions.length > 0) {
+    if (
+      filterOptions.colors.length > 0 ||
+      filterOptions.productTypes.length > 0 ||
+      filterOptions.sizes.length > 0 ||
+      filterOptions.occasions.length > 0
+    ) {
       applyFilters();
       updateURL(filters);
     }
@@ -196,28 +196,30 @@ const AllProducts: React.FC = () => {
         minPrice: filters.minPrice,
         maxPrice: filters.maxPrice,
         colors: filters.colors.length > 0 ? filters.colors : [],
-        productTypes: filters.productTypes.length > 0 ? filters.productTypes : [],
-        sizes: filters.sizes.length > 0 ? filters.sizes : [],
-        occasions: filters.occasions.length > 0 ? filters.occasions : []
+        productCategories:
+          filters.productTypes.length > 0 ? filters.productTypes : [],
+        // sizes: filters.sizes.length > 0 ? filters.sizes : [],
+        occasions: filters.occasions.length > 0 ? filters.occasions : [],
       };
 
       const response = await apiRequest(API_URL + "/products/filter", {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: filterPayload
+        body: filterPayload,
       });
 
       // Transform API response similar to getAllProducts
       const transformedProducts = response.map((apiProduct: any) => {
-        const isSale = apiProduct.price.originalAmount > apiProduct.price.amount;
+        const isSale =
+          apiProduct.price.originalAmount > apiProduct.price.amount;
         const discount = isSale
           ? Math.round(
-            ((apiProduct.price.originalAmount - apiProduct.price.amount) /
-              apiProduct.price.originalAmount) *
-            100
-          )
+              ((apiProduct.price.originalAmount - apiProduct.price.amount) /
+                apiProduct.price.originalAmount) *
+                100
+            )
           : undefined;
 
         return {
@@ -239,67 +241,81 @@ const AllProducts: React.FC = () => {
     } catch (error) {
       console.error("Error applying filters:", error);
       // Fallback to client-side filtering if API fails
-      const filtered = products.filter(product => {
-        const priceMatch = product.price >= filters.minPrice && product.price <= filters.maxPrice;
-        const colorMatch = filters.colors.length === 0 || filters.colors.some(color => product.colors.includes(color));
-        const typeMatch = filters.productTypes.length === 0 || filters.productTypes.includes(product.category);
-        const sizeMatch = filters.sizes.length === 0 || filters.sizes.some(size => product.sizes.includes(size));
-        const occasionMatch = filters.occasions.length === 0 || filters.occasions.some(occasion => product.occasions?.includes(occasion));
-        return priceMatch && colorMatch && typeMatch && sizeMatch && occasionMatch;
+      const filtered = products.filter((product) => {
+        const priceMatch =
+          product.price >= filters.minPrice &&
+          product.price <= filters.maxPrice;
+        const colorMatch =
+          filters.colors.length === 0 ||
+          filters.colors.some((color) => product.colors.includes(color));
+        const typeMatch =
+          filters.productTypes.length === 0 ||
+          filters.productTypes.includes(product.category);
+        const sizeMatch =
+          filters.sizes.length === 0 ||
+          filters.sizes.some((size) => product.sizes.includes(size));
+        const occasionMatch =
+          filters.occasions.length === 0 ||
+          filters.occasions.some((occasion) =>
+            product.occasions?.includes(occasion)
+          );
+        return (
+          priceMatch && colorMatch && typeMatch && sizeMatch && occasionMatch
+        );
       });
       setFilteredProducts(filtered);
     }
   };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
-      [section]: !prev[section]
+      [section]: !prev[section],
     }));
   };
 
   const handleColorFilter = (color: string) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       colors: prev.colors.includes(color)
-        ? prev.colors.filter(c => c !== color)
-        : [...prev.colors, color]
+        ? prev.colors.filter((c) => c !== color)
+        : [...prev.colors, color],
     }));
   };
 
   const handleProductTypeFilter = (type: string) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       productTypes: prev.productTypes.includes(type)
-        ? prev.productTypes.filter(t => t !== type)
-        : [...prev.productTypes, type]
+        ? prev.productTypes.filter((t) => t !== type)
+        : [...prev.productTypes, type],
     }));
   };
 
   const handleSizeFilter = (size: string) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       sizes: prev.sizes.includes(size)
-        ? prev.sizes.filter(s => s !== size)
-        : [...prev.sizes, size]
+        ? prev.sizes.filter((s) => s !== size)
+        : [...prev.sizes, size],
     }));
   };
 
   const handleOccasionFilter = (occasion: string) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       occasions: prev.occasions.includes(occasion)
-        ? prev.occasions.filter(o => o !== occasion)
-        : [...prev.occasions, occasion]
+        ? prev.occasions.filter((o) => o !== occasion)
+        : [...prev.occasions, occasion],
     }));
   };
 
   const handleRangeChange = (values: number | number[]) => {
     if (Array.isArray(values)) {
-      setFilters(prev => ({
+      setFilters((prev) => ({
         ...prev,
         minPrice: values[0],
-        maxPrice: values[1]
+        maxPrice: values[1],
       }));
     }
   };
@@ -311,7 +327,7 @@ const AllProducts: React.FC = () => {
       colors: [],
       productTypes: [],
       sizes: [],
-      occasions: []
+      occasions: [],
     };
     setFilters(clearedFilters);
     setSearchParams(new URLSearchParams()); // Clear URL parameters
@@ -340,44 +356,59 @@ const AllProducts: React.FC = () => {
         <div className="w-[30%] bg-[#f9f2e8] p-5 h-fit -ml-[12%] flex flex-col gap-4">
           <div className="flex items-center justify-between mb-6 lg:w-[18vw]">
             <h2 className="text-3xl font-semibold jiji">Filters</h2>
-            {(filters.colors.length > 0 || filters.productTypes.length > 0 ||
-              filters.sizes.length > 0 || filters.occasions.length > 0 ||
+            {(filters.colors.length > 0 ||
+              filters.productTypes.length > 0 ||
+              filters.sizes.length > 0 ||
+              filters.occasions.length > 0 ||
               filters.minPrice !== filterOptions.priceRange.min ||
               filters.maxPrice !== filterOptions.priceRange.max) && (
-                <button
-                  onClick={clearAllFilters}
-                  className="text-sm text-gold hover:underline flex items-center gap-1"
-                >
-                  <X size={14} />
-                  Clear All
-                </button>
-              )}
+              <button
+                onClick={clearAllFilters}
+                className="text-sm text-gold hover:underline flex items-center gap-1"
+              >
+                <X size={14} />
+                Clear All
+              </button>
+            )}
           </div>
 
           {/* Price Filter */}
           <div className="mb-6 text-lg">
             <button
-              onClick={() => toggleSection('price')}
+              onClick={() => toggleSection("price")}
               className="flex items-center justify-between w-full text-left font-medium mb-3"
             >
               <span>Price</span>
-              {expandedSections.price ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              {expandedSections.price ? (
+                <ChevronUp size={20} />
+              ) : (
+                <ChevronDown size={20} />
+              )}
             </button>
 
             {expandedSections.price && (
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
                   <div className="flex-1">
-                    <label className="block text-sm text-gray-600 mb-1">Min</label>
+                    <label className="block text-sm text-gray-600 mb-1">
+                      Min
+                    </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                        ₹
+                      </span>
                       <input
                         type="number"
                         value={filters.minPrice}
-                        onChange={(e) => setFilters(prev => ({
-                          ...prev,
-                          minPrice: Math.min(Number(e.target.value), prev.maxPrice)
-                        }))}
+                        onChange={(e) =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            minPrice: Math.min(
+                              Number(e.target.value),
+                              prev.maxPrice
+                            ),
+                          }))
+                        }
                         className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold bg-[#f2ede7]"
                         min={filterOptions.priceRange.min}
                         max={filterOptions.priceRange.max}
@@ -386,16 +417,25 @@ const AllProducts: React.FC = () => {
                   </div>
                   <span className="text-gray-500 mt-6">To</span>
                   <div className="flex-1">
-                    <label className="block text-sm text-gray-600 mb-1">Max</label>
+                    <label className="block text-sm text-gray-600 mb-1">
+                      Max
+                    </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                        ₹
+                      </span>
                       <input
                         type="number"
                         value={filters.maxPrice}
-                        onChange={(e) => setFilters(prev => ({
-                          ...prev,
-                          maxPrice: Math.max(Number(e.target.value), prev.minPrice)
-                        }))}
+                        onChange={(e) =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            maxPrice: Math.max(
+                              Number(e.target.value),
+                              prev.minPrice
+                            ),
+                          }))
+                        }
                         className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-gold bg-[#f2ede7]"
                         min={filterOptions.priceRange.min}
                         max={filterOptions.priceRange.max}
@@ -421,17 +461,24 @@ const AllProducts: React.FC = () => {
           {/* Product Type Filter */}
           <div className="mb-6 text-lg">
             <button
-              onClick={() => toggleSection('productType')}
+              onClick={() => toggleSection("productType")}
               className="flex items-center justify-between w-full text-left font-medium mb-3"
             >
               <span>Product Type</span>
-              {expandedSections.productType ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              {expandedSections.productType ? (
+                <ChevronUp size={20} />
+              ) : (
+                <ChevronDown size={20} />
+              )}
             </button>
 
             {expandedSections.productType && (
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {filterOptions.productTypes.map((type) => (
-                  <label key={type} className="flex items-center cursor-pointer">
+                  <label
+                    key={type}
+                    className="flex items-center cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       checked={filters.productTypes.includes(type)}
@@ -446,19 +493,26 @@ const AllProducts: React.FC = () => {
           </div>
 
           {/* Size Filter */}
-          <div className="mb-6 text-lg">
+          {/* <div className="mb-6 text-lg">
             <button
-              onClick={() => toggleSection('size')}
+              onClick={() => toggleSection("size")}
               className="flex items-center justify-between w-full text-left font-medium mb-3"
             >
               <span>Size</span>
-              {expandedSections.size ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              {expandedSections.size ? (
+                <ChevronUp size={20} />
+              ) : (
+                <ChevronDown size={20} />
+              )}
             </button>
 
             {expandedSections.size && (
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {filterOptions.sizes.map((size) => (
-                  <label key={size} className="flex items-center cursor-pointer">
+                  <label
+                    key={size}
+                    className="flex items-center cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       checked={filters.sizes.includes(size)}
@@ -470,22 +524,29 @@ const AllProducts: React.FC = () => {
                 ))}
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* Occasions Filter */}
           <div className="mb-6 text-lg">
             <button
-              onClick={() => toggleSection('occasions')}
+              onClick={() => toggleSection("occasions")}
               className="flex items-center justify-between w-full text-left font-medium mb-3"
             >
               <span>Occasions</span>
-              {expandedSections.occasions ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              {expandedSections.occasions ? (
+                <ChevronUp size={20} />
+              ) : (
+                <ChevronDown size={20} />
+              )}
             </button>
 
             {expandedSections.occasions && (
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {filterOptions.occasions.map((occasion) => (
-                  <label key={occasion} className="flex items-center cursor-pointer">
+                  <label
+                    key={occasion}
+                    className="flex items-center cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       checked={filters.occasions.includes(occasion)}
@@ -502,17 +563,24 @@ const AllProducts: React.FC = () => {
           {/* Color Filter */}
           <div className="mb-6 text-lg">
             <button
-              onClick={() => toggleSection('color')}
+              onClick={() => toggleSection("color")}
               className="flex items-center justify-between w-full text-left font-medium mb-3"
             >
               <span>Color</span>
-              {expandedSections.color ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              {expandedSections.color ? (
+                <ChevronUp size={20} />
+              ) : (
+                <ChevronDown size={20} />
+              )}
             </button>
 
             {expandedSections.color && (
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {filterOptions.colors.map((color) => (
-                  <label key={color} className="flex items-center cursor-pointer">
+                  <label
+                    key={color}
+                    className="flex items-center cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       checked={filters.colors.includes(color)}
