@@ -32,8 +32,8 @@ const Header: React.FC = () => {
 
   const location = useLocation();
   const lastScrollYRef = useRef(0);
-  const ticking = useRef(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isScrollingDownRef = useRef(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Close menus when route changes
   useEffect(() => {
@@ -43,73 +43,57 @@ const Header: React.FC = () => {
     setShowSearch(false);
   }, [location]);
 
-  // Instant responsive scroll handler
+  // Stable scroll handler that prevents feedback loops
   useEffect(() => {
-    const updateHeader = () => {
-      const currentScrollY = window.scrollY;
-      const scrollDifference = currentScrollY - lastScrollYRef.current;
-
-      // Update scrolled state
-      const shouldBeScrolled = currentScrollY > 50;
-      if (isScrolled !== shouldBeScrolled) {
-        setIsScrolled(shouldBeScrolled);
-      }
-
-      // Instant response to any scroll direction after initial threshold
-      if (currentScrollY > 100) {
-        // Only start hiding/showing after 100px
-        if (scrollDifference > 10) {
-          // Scrolling down - hide instantly
-          if (isVisible) {
-            setIsVisible(false);
-          }
-        } else if (scrollDifference < -10) {
-          // Scrolling up - show instantly
-          if (!isVisible) {
-            setIsVisible(true);
-          }
-        }
-      } else {
-        // Always show when near top
-        if (!isVisible) {
-          setIsVisible(true);
-        }
-      }
-
-      lastScrollYRef.current = currentScrollY;
-      ticking.current = false;
-    };
-
     const handleScroll = () => {
-      // Clear any pending timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      // Clear existing timeout
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
       }
 
-      // Immediate response with minimal throttling
-      if (!ticking.current) {
-        ticking.current = true;
-        updateHeader();
+      // Debounce scroll handling
+      scrollTimeoutRef.current = setTimeout(() => {
+        const currentScrollY = window.scrollY;
+        const scrollDifference = currentScrollY - lastScrollYRef.current;
 
-        // Very short timeout for final cleanup
-        timeoutRef.current = setTimeout(() => {
-          if (!ticking.current) {
-            updateHeader();
+        // Update scrolled state (for header styling)
+        setIsScrolled(currentScrollY > 50);
+
+        // Handle visibility with larger thresholds to prevent flickering
+        if (currentScrollY < 100) {
+          // Always show header near the top
+          setIsVisible(true);
+          isScrollingDownRef.current = false;
+        } else {
+          // Only change visibility on significant scroll movements
+          if (scrollDifference > 25) {
+            // Scrolling down significantly
+            if (!isScrollingDownRef.current) {
+              setIsVisible(false);
+              isScrollingDownRef.current = true;
+            }
+          } else if (scrollDifference < -25) {
+            // Scrolling up significantly
+            if (isScrollingDownRef.current) {
+              setIsVisible(true);
+              isScrollingDownRef.current = false;
+            }
           }
-        }, 8); // Faster response
-      }
+        }
+
+        lastScrollYRef.current = currentScrollY;
+      }, 10); // Small debounce delay
     };
 
-    // Add passive listener for better performance
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
       }
     };
-  }, [isScrolled, isVisible]); // Add dependencies to ensure proper updates
+  }, []);
 
   const totalItems = getTotalItems();
 
@@ -130,7 +114,6 @@ const Header: React.FC = () => {
       }
     } catch (error) {
       console.error("Error fetching products:", error);
-      
     }
   };
 
@@ -141,9 +124,9 @@ const Header: React.FC = () => {
   return (
     <>
       <header
-        className={`sticky top-0 z-40 transition-all duration-300 border-b border-black ease-out ${
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 border-b border-black ease-in-out ${
           isScrolled ? "bg-[#f9f2e8] shadow-md py-2" : "bg-[#f9f2e8] py-12"
-        } ${isVisible ? "translate-y-0" : "-translate-y-full"}`}
+        } ${isVisible ? "transform translate-y-0" : "transform -translate-y-full"}`}
       >
         <div className="container-custom flex items-center justify-between">
           {/* Mobile menu button */}
@@ -167,7 +150,7 @@ const Header: React.FC = () => {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8 ">
             <div className="flex gap-8 lg:-ml-[20%]">
-              <NavLink to="/" className="nav-link lg:-mr-0"  onClick={() => navigate('/home')}>
+              <NavLink to="/" className="nav-link lg:-mr-0">
                 Home
               </NavLink>
               <div
@@ -316,6 +299,13 @@ const Header: React.FC = () => {
           </div>
         )}
       </header>
+
+      {/* Add spacer to prevent content jump when header changes size */}
+      <div 
+        className={`transition-all duration-300 ${
+          isScrolled ? "h-16" : "h-32"
+        }`}
+      />
 
       {/* Search Modal */}
       {showSearch && <SearchBar onClose={() => setShowSearch(false)} />}

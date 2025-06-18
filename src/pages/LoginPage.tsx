@@ -193,9 +193,7 @@ export default function LoginPage() {
         }
       );
       
-      // Check if response is successful
       if (response.data && response.data.response_key === 'SUCCESS') {
-        // Store user data in localStorage
         localStorage.setItem('user_data', JSON.stringify(response.data.payload.user));
         localStorage.setItem('access_token', response.data.payload.token_detail.access_token);
         
@@ -205,15 +203,11 @@ export default function LoginPage() {
         
         localStorage.setItem('user_email', userEmail);
         
-        // Update auth context
         setIsLoggedIn(1);
         
-        // Navigate based on whether there's a pending cart action
         if (pendingCartAction) {
-          // Navigate to home and let the CartContext handle the pending action
           navigate('/home');
         } else {
-          // Regular login, go to home page
           navigate('/home');
         }
       } else {

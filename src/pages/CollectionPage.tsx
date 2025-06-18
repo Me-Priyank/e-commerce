@@ -46,19 +46,16 @@ const CollectionPage: React.FC = () => {
   useEffect(() => {
     let result = products;
     
-    // Filter by category
     if (category) {
       result = result.filter(product => 
         product.category.toLowerCase() === category.toLowerCase()
       );
     }
     
-    // Filter by price range
     result = result.filter(product => 
       product.price >= priceRange[0] && product.price <= priceRange[1]
     );
     
-    // Filter by selected colors
     if (selectedColors.length > 0) {
       result = result.filter(product => 
         product.colors.some(color => selectedColors.includes(color))

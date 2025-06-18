@@ -14,6 +14,7 @@ import { CartProvider } from './context/CartContext';
 import CartDrawer from './components/CartDrawer';
 import { AuthProvider, AuthContext } from "./pages/AuthContext";
 import Account from "./pages/Account";
+import Ship from "./pages/ShippingPolicy";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function AppRoutes() {
           <Route path="collection/:category" element={<CollectionPage />} />
           <Route path="product/:id" element={<ProductDetail />} />
           <Route path="about" element={<About />} />
+          <Route path="shipping" element={<Ship />} />
           <Route path="contact" element={<Contact />} />
           <Route path="book-appointment" element={<BookAppointment />} />
           <Route path="*" element={<NotFound />} />
